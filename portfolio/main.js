@@ -60,9 +60,9 @@ function startSnow() {
     c.width = c.height = 64;
     const g = c.getContext('2d');
     const grad = g.createRadialGradient(32, 32, 0, 32, 32, 32);
-    grad.addColorStop(0, 'rgba(255,255,255,1)');
-    grad.addColorStop(0.35, 'rgba(255,255,255,0.85)');
-    grad.addColorStop(1, 'rgba(255,255,255,0)');
+    grad.addColorStop(0, 'rgba(255,251,244,1)');
+    grad.addColorStop(0.35, 'rgba(255,251,244,0.85)');
+    grad.addColorStop(1, 'rgba(255,251,244,0)');
     g.fillStyle = grad;
     g.fillRect(0, 0, 64, 64);
     return c;
@@ -163,13 +163,13 @@ function startSnow() {
     // Far and mid flakes fall behind the drift, near flakes in front of it
     for (const f of flakes) if (f.layer < 2) drawFlake(f);
 
-    // The drift: solid snow, bright on top and shading into blue-grey below
+    // The drift: solid snow, floral white on top, shading through bone into olive
     ctx.globalAlpha = 1;
     let top = h;
     for (let i = 0; i < base.length; i++) top = Math.min(top, base[i] - pile[i]);
     const grad = ctx.createLinearGradient(0, top, 0, h);
     grad.addColorStop(0, floral);
-    grad.addColorStop(0.35, '#d5dce8');
+    grad.addColorStop(0.35, '#ece5d7'); // between floral white and bone
     grad.addColorStop(0.75, bone);
     grad.addColorStop(1, olive);
     ctx.beginPath();
@@ -183,7 +183,7 @@ function startSnow() {
     // Soft glow along the crest
     ctx.save();
     ctx.globalAlpha = 0.5;
-    ctx.strokeStyle = '#ffffff';
+    ctx.strokeStyle = floral;
     ctx.lineWidth = 1.5;
     ctx.shadowColor = floral;
     ctx.shadowBlur = 8;
@@ -193,7 +193,7 @@ function startSnow() {
     ctx.restore();
 
     // Twinkling ice crystals in the snow surface
-    ctx.fillStyle = '#ffffff';
+    ctx.fillStyle = floral;
     for (const p of sparkles) {
       const tw = Math.max(0, Math.sin(s * p.speed + p.phase));
       if (tw < 0.85) continue;

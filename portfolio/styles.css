@@ -13,14 +13,14 @@
   --hover: #fff;
   --border: rgba(139, 163, 197, 0.22);
   --size: 13px;
-  --snow-h: clamp(140px, 26vh, 240px);
+  --snow-h: clamp(180px, 34vh, 320px);
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
 html, body { max-width: 100vw; overflow-x: hidden; }
 body {
   min-height: 100vh;
-  padding-bottom: var(--snow-h);
+  padding-bottom: calc(var(--snow-h) * 0.6);
   background-color: var(--bg);
   background-image: radial-gradient(rgba(139, 163, 197, 0.09) 1px, transparent 1px);
   background-size: 24px 24px;
@@ -89,7 +89,7 @@ a.row:hover .meta { color: var(--frost); }
 @keyframes in { to { opacity: 1; transform: none; } }
 
 @media (max-width: 600px) {
-  :root { --snow-h: clamp(110px, 18svh, 150px); }
+  :root { --snow-h: clamp(130px, 24svh, 190px); }
   .page { padding: 1.15rem 1.25rem 1.5rem; }
   .top { align-items: flex-start; }
   .avatar { width: 116px; }

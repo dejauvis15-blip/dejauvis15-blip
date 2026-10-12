@@ -1,17 +1,16 @@
 :root {
   /* Palette */
-  --moonlight: #f0ecdd;
-  --frost: #8ba3c5;
-  --steel: #495b7d;
-  --storm: #23354d;
-  --oxford: #02122f;
+  --smoky: #11120d;   /* smoky black: main color */
+  --olive: #565449;   /* olive drab */
+  --bone: #d8cfbc;    /* bone */
+  --floral: #fffbf4;  /* floral white: text / accent */
 
-  --bg: var(--oxford);
-  --fg: var(--moonlight);
-  --muted: var(--frost);
-  --dim: rgba(139, 163, 197, 0.6);
-  --hover: #fff;
-  --border: rgba(139, 163, 197, 0.22);
+  --bg: var(--smoky);
+  --fg: var(--floral);
+  --muted: var(--bone);
+  --dim: rgba(216, 207, 188, 0.55);
+  --hover: var(--floral);
+  --border: rgba(216, 207, 188, 0.18);
   --size: 13px;
   --snow-h: clamp(180px, 34vh, 320px);
 }
@@ -22,7 +21,7 @@ body {
   min-height: 100vh;
   padding-bottom: calc(var(--snow-h) * 0.6);
   background-color: var(--bg);
-  background-image: radial-gradient(rgba(139, 163, 197, 0.09) 1px, transparent 1px);
+  background-image: radial-gradient(rgba(216, 207, 188, 0.07) 1px, transparent 1px);
   background-size: 24px 24px;
   color: var(--fg);
   font-family: "JetBrains Mono", ui-monospace, monospace;
@@ -33,7 +32,7 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 a { color: inherit; text-decoration: none; }
-::selection { background: var(--steel); color: var(--hover); }
+::selection { background: var(--olive); color: var(--hover); }
 .muted { color: var(--dim); }
 
 .page { max-width: 800px; margin: 0 auto; padding: 1.4rem 2rem 2rem; position: relative; z-index: 1; }
@@ -51,35 +50,35 @@ a { color: inherit; text-decoration: none; }
 
 .avatar {
   display: block; flex-shrink: 0; width: 168px; aspect-ratio: 498 / 279; overflow: hidden;
-  border: 1px solid var(--border); border-radius: 4px; background: var(--storm);
+  border: 1px solid var(--border); border-radius: 4px; background: var(--olive);
   transition: transform .2s, box-shadow .2s, border-color .2s;
 }
-.avatar:hover { transform: scale(1.04); border-color: var(--frost); box-shadow: 0 0 22px rgba(139, 163, 197, 0.35); }
+.avatar:hover { transform: scale(1.04); border-color: var(--bone); box-shadow: 0 0 22px rgba(255, 251, 244, 0.18); }
 .avatar-img { width: 100%; height: 100%; object-fit: cover; display: block; }
 
 .bio { color: var(--muted); max-width: 60ch; padding: 0 12px 0.5rem 0; }
 
 /* Sections */
 .block { padding: 13px 0; }
-.label { font-size: var(--size); font-weight: 800; color: var(--frost); letter-spacing: 0.05em; margin-bottom: 11px; }
+.label { font-size: var(--size); font-weight: 800; color: var(--bone); letter-spacing: 0.05em; margin-bottom: 11px; }
 
 .row {
   display: flex; justify-content: space-between; align-items: center; gap: 12px;
   margin: 2px 0; padding: 6px 12px; border-radius: 8px;
   transition: background .15s, color .15s;
 }
-a.row:hover { background: rgba(73, 91, 125, 0.35); color: var(--hover); }
+a.row:hover { background: rgba(86, 84, 73, 0.45); color: var(--hover); }
 .row-left { display: inline-flex; align-items: center; gap: 12px; flex-wrap: wrap; min-width: 0; }
 .org { display: inline-flex; align-items: center; gap: 8px; white-space: nowrap; }
 .dot { width: 10px; height: 10px; border-radius: 2px; background: var(--c); display: inline-block; }
 .desc { color: var(--dim); }
 .meta { color: var(--dim); flex-shrink: 0; text-align: right; }
-a.row:hover .meta { color: var(--frost); }
+a.row:hover .meta { color: var(--bone); }
 
 .misc { padding: 6px 12px; }
-.sep { color: var(--steel); margin: 0 0.5rem; }
-.u { text-decoration: underline; text-underline-offset: 0.2em; text-decoration-thickness: 1px; text-decoration-color: var(--frost); border-radius: 2px; transition: background .15s; }
-.u:hover { background: rgba(73, 91, 125, 0.4); color: var(--hover); }
+.sep { color: var(--olive); margin: 0 0.5rem; }
+.u { text-decoration: underline; text-underline-offset: 0.2em; text-decoration-thickness: 1px; text-decoration-color: var(--bone); border-radius: 2px; transition: background .15s; }
+.u:hover { background: rgba(86, 84, 73, 0.5); color: var(--hover); }
 
 /* Falling snow along the bottom */
 .snow { position: fixed; left: 0; right: 0; bottom: 0; width: 100%; height: var(--snow-h); pointer-events: none; display: block; }

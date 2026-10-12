@@ -38,9 +38,9 @@ function startSnow() {
   const canvas = document.querySelector('.snow');
   const ctx = canvas.getContext('2d');
   const css = getComputedStyle(document.documentElement);
-  const moon = css.getPropertyValue('--moonlight').trim();
-  const frost = css.getPropertyValue('--frost').trim();
-  const steel = css.getPropertyValue('--steel').trim();
+  const floral = css.getPropertyValue('--floral').trim();
+  const bone = css.getPropertyValue('--bone').trim();
+  const olive = css.getPropertyValue('--olive').trim();
 
   // Depth layers: far flakes are small, dim and slow; near ones are big, soft and fast.
   const LAYERS = [
@@ -168,10 +168,10 @@ function startSnow() {
     let top = h;
     for (let i = 0; i < base.length; i++) top = Math.min(top, base[i] - pile[i]);
     const grad = ctx.createLinearGradient(0, top, 0, h);
-    grad.addColorStop(0, moon);
+    grad.addColorStop(0, floral);
     grad.addColorStop(0.35, '#d5dce8');
-    grad.addColorStop(0.75, frost);
-    grad.addColorStop(1, steel);
+    grad.addColorStop(0.75, bone);
+    grad.addColorStop(1, olive);
     ctx.beginPath();
     ctx.moveTo(0, h);
     for (let i = 0; i < base.length; i++) ctx.lineTo(i * COL, base[i] - pile[i]);
@@ -185,7 +185,7 @@ function startSnow() {
     ctx.globalAlpha = 0.5;
     ctx.strokeStyle = '#ffffff';
     ctx.lineWidth = 1.5;
-    ctx.shadowColor = moon;
+    ctx.shadowColor = floral;
     ctx.shadowBlur = 8;
     ctx.beginPath();
     for (let i = 0; i < base.length; i++) ctx.lineTo(i * COL, base[i] - pile[i] + 0.5);

@@ -1,76 +1,25 @@
-# Hi, I'm Jauvis 👋
+# Hey, I'm Jauvis 👋
 
-I'm an Information Science student at the University of Tennessee, Knoxville with a concentration in User Experience Design.
+I'm an Information Science student at the University of Tennessee, Knoxville, concentrating in User Experience Design. I'm passionate about software engineering, full-stack development, and creating thoughtful digital experiences.
 
-I enjoy combining **design, technology, and development** to create digital products that are useful, intuitive, and visually engaging.
+Currently building web applications, exploring backend technologies, and strengthening my software development skills.
 
-## 👨🏽‍💻 About Me
+### Tech Stack
 
-- 🎓 Information Science @ University of Tennessee, Knoxville
-- 🎨 Concentration in User Experience Design
-- 💼 UX Analysis Intern at Tombras
-- 🖥️ Undergraduate Media & Website Design Assistant at UTK's Fibers and Composites Manufacturing Facility
-- 🚀 Interested in UX Design, Product Design, Front-End Development, and Software Engineering
-- 🌱 Currently improving my skills in React, JavaScript, and product development
-- 📍 Knoxville, Tennessee
+**Languages:** Python, JavaScript, TypeScript, HTML, CSS
 
-## 🛠️ Skills & Tools
+**Frontend:** React, Next.js, Tailwind CSS, Framer Motion
 
-### Design
-- Figma
-- Adobe Photoshop
-- Adobe Illustrator
-- Webflow
-- WordPress
+**Backend:** Flask, MongoDB, REST APIs
 
-### Development
-- HTML
-- CSS
-- JavaScript
-- React
-- Python
-- C
-- C++
-- Git & GitHub
+**Tools:** Git, GitHub, Docker, Vercel, Figma
 
-## 🚀 Featured Projects
+### Featured Projects
 
-### 🎵 Autm — Music Stat Tracker
-Currently developing a music statistics platform designed to help users explore and understand their listening habits through an engaging interface.
+- **[GitHub Commit Analyzer](https://github.com/dejauvis15-blip/Github-commit-analyzer-)** — A Python and Flask backend that analyzes GitHub activity using MongoDB and the GitHub API.
+- **[Autm](https://github.com/dejauvis15-blip/Autm-)** — A music analytics web application featuring listening statistics and social features.
+- **[Developer Portfolio](https://github.com/dejauvis15-blip/Dev-Portfolio-)** — My personal developer website built with HTML, CSS, and JavaScript.
 
-**Focus:** Full-Stack Development, UI/UX Design, Data Visualization
+### Connect
 
-[View Project on GitHub](https://github.com/dejauvis15-blip/Autm--Music-Stat-Tracker)
-
----
-
-### 💬 Discord UX Redesign
-A UX redesign project focused on improving usability, navigation, and the overall user experience of Discord.
-
-**Focus:** UX Research, Wireframing, Prototyping, UI Design
-
----
-
-### 🎬 Netflix UX Case Study
-An end-to-end UX case study exploring opportunities to improve the Netflix user experience through research, ideation, wireframes, and high-fidelity designs.
-
-**Focus:** UX Research, User Flows, Wireframing, Prototyping
-
-## 🌐 Portfolio
-
-Check out my UX and product design work:
-
-**Portfolio:**  
-https://jauvis-dozier-portfolio.vercel.app/
-
-## 📫 Let's Connect
-
-I'm always interested in connecting with designers, developers, and people working in technology.
-
-- LinkedIn: Add your LinkedIn URL here
-- GitHub: https://github.com/dejauvis15-blip
-- Portfolio: https://jauvis-dozier-portfolio.vercel.app/
-
----
-
-Thanks for visiting my profile!
+[Portfolio](https://www.jauvis.dev) · [LinkedIn](https://www.linkedin.com/in/jauvisdozier) · [GitHub](https://github.com/dejauvis15-blip)

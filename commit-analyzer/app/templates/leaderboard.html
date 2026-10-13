@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>🏆 Commit Leaderboard</h1>
+<p class="muted">Synced from the GitHub API, stored in MongoDB, refreshed by a cron job.</p>
+
+<div class="panel row">
+  <label>Rank by
+    <select id="metric">
+      <option value="commits_last_30_days">Commits (last 30 days)</option>
+      <option value="total_commits">Total commits</option>
+      <option value="current_streak">Current streak</option>
+      <option value="longest_streak">Longest streak</option>
+      <option value="active_days">Active days</option>
+    </select>
+  </label>
+  <label>Team <select id="team"><option value="">Everyone</option></select></label>
+</div>
+
+<div class="panel">
+  <table>
+    <thead><tr><th>#</th><th>User</th><th>30d</th><th>Total</th><th>Streak (cur / best)</th><th>Top languages</th></tr></thead>
+    <tbody id="rows"><tr><td colspan="6" class="muted">Loading…</td></tr></tbody>
+  </table>
+</div>
+
+<form class="panel row" id="add">
+  <input id="username" placeholder="GitHub username" required>
+  <button>Track user</button>
+  <span id="status" class="muted"></span>
+</form>
+
+<script>
+const $ = (id) => document.getElementById(id);
+const esc = (s) => String(s ?? "").replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+
+async function loadTeams() {
+  const teams = await (await fetch("/api/teams")).json();
+  for (const t of teams) $("team").add(new Option(t.name, t.name));
+}
+
+async function load() {
+  const params = new URLSearchParams({ metric: $("metric").value });
+  if ($("team").value) params.set("team", $("team").value);
+  const data = await (await fetch("/api/leaderboard?" + params)).json();
+  const rows = data.leaderboard || [];
+  $("rows").innerHTML = rows.length ? rows.map(r => `
+    <tr>
+      <td>${r.rank}</td>
+      <td><a href="/u/${encodeURIComponent(r.username)}">${esc(r.username)}</a></td>
+      <td>${r.commits_last_30_days}</td>
+      <td>${r.total_commits}</td>
+      <td>${r.current_streak} / ${r.longest_streak} days</td>
+      <td class="muted">${(r.languages || []).map(l => esc(l.language)).join(", ")}</td>
+    </tr>`).join("") : `<tr><td colspan="6" class="muted">No users yet - add one below.</td></tr>`;
+}
+
+$("metric").onchange = load;
+$("team").onchange = load;
+$("add").onsubmit = async (e) => {
+  e.preventDefault();
+  $("status").textContent = "Fetching commits from GitHub… (first sync can take a minute)";
+  const res = await fetch("/api/users", { method: "POST", headers: {"Content-Type": "application/json"},
+                                          body: JSON.stringify({ username: $("username").value }) });
+  const body = await res.json();
+  $("status").textContent = res.ok ? `Added ${body.username}: ${body.sync?.total_commits ?? 0} commits` : body.error;
+  load();
+};
+loadTeams(); load();
+</script>
+{% endblock %}

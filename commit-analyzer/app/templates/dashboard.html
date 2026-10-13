@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+{% block title %}{{ username }} · Commit Analyzer{% endblock %}
+{% block content %}
+<a href="/">← Leaderboard</a>
+<h1>{{ username }}</h1>
+<p class="muted" id="synced"></p>
+
+<div class="tiles">
+  <div class="panel tile"><div class="value" id="total">–</div><div class="label">Total commits</div></div>
+  <div class="panel tile"><div class="value" id="recent">–</div><div class="label">Last 30 days</div></div>
+  <div class="panel tile"><div class="value" id="current">–</div><div class="label">Current streak (days)</div></div>
+  <div class="panel tile"><div class="value" id="longest">–</div><div class="label">Longest streak (days)</div></div>
+  <div class="panel tile"><div class="value" id="bestday">–</div><div class="label">Most productive day</div></div>
+</div>
+
+<div class="panel"><h3>Last 12 months</h3><div class="heatmap" id="heatmap"></div></div>
+
+<div class="grid2">
+  <div class="panel"><h3>Commits by weekday</h3><canvas id="weekday"></canvas></div>
+  <div class="panel"><h3>Commits by hour (UTC)</h3><canvas id="hour"></canvas></div>
+  <div class="panel"><h3>Languages</h3><canvas id="langs"></canvas></div>
+</div>
+
+<script>
+Chart.defaults.color = "#8b949e";
+Chart.defaults.borderColor = "#30363d";
+const green = "#3fb950";
+
+function heatmap(daily) {
+  const counts = Object.fromEntries(daily.map(d => [d.date, d.commits]));
+  const max = Math.max(1, ...daily.map(d => d.commits));
+  const el = document.getElementById("heatmap");
+  const today = new Date();
+  const start = new Date(Date.UTC(today.getUTCFullYear(), today.getUTCMonth(), today.getUTCDate() - 364));
+  start.setUTCDate(start.getUTCDate() - start.getUTCDay()); // align to Sunday
+  for (let d = new Date(start); d <= today; d.setUTCDate(d.getUTCDate() + 1)) {
+    const key = d.toISOString().slice(0, 10), n = counts[key] || 0;
+    const cell = document.createElement("div");
+    if (n) cell.style.background = `rgba(63,185,80,${0.25 + 0.75 * n / max})`;
+    cell.title = `${key}: ${n} commit${n === 1 ? "" : "s"}`;
+    el.appendChild(cell);
+  }
+}
+
+(async () => {
+  const res = await fetch(`/api/users/{{ username|urlencode }}/stats`);
+  const s = await res.json();
+  if (!res.ok) { document.getElementById("synced").textContent = s.error; return; }
+  document.getElementById("synced").textContent = `Stats computed ${new Date(s.computed_at).toLocaleString()}`;
+  for (const [id, v] of [["total", s.total_commits], ["recent", s.commits_last_30_days], ["current", s.current_streak],
+                         ["longest", s.longest_streak], ["bestday", s.most_productive_day ?? "–"]])
+    document.getElementById(id).textContent = v;
+
+  heatmap(s.daily_activity);
+  const bar = (id, labels, data) => new Chart(document.getElementById(id), {
+    type: "bar", data: { labels, datasets: [{ data, backgroundColor: green }] },
+    options: { plugins: { legend: { display: false } } } });
+  bar("weekday", s.by_weekday.map(d => d.day.slice(0, 3)), s.by_weekday.map(d => d.commits));
+  bar("hour", s.by_hour.map(h => h.hour), s.by_hour.map(h => h.commits));
+  new Chart(document.getElementById("langs"), {
+    type: "doughnut",
+    data: { labels: s.languages.map(l => l.language), datasets: [{ data: s.languages.map(l => l.percent) }] },
+    options: { plugins: { legend: { position: "right" } } } });
+})();
+</script>
+{% endblock %}

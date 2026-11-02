@@ -433,7 +433,7 @@ a{ color:inherit; }
 .file:hover{ border-color:var(--ghost); }
 .file .feed{ aspect-ratio:4/3; }
 .file .feed::after{ display:none; }
-.file .fn{ padding:8px 10px 2px; font-family:var(--mono); font-size:11px; color:var(--text); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.file .fn{ padding:8px 10px 4px; font-family:var(--mono); font-size:10.5px; line-height:1.4; color:var(--text); overflow-wrap:anywhere; min-height:44px; }
 .file .fd{ padding:0 10px 9px; font-family:var(--mono); font-size:10px; color:var(--faint); display:flex; justify-content:space-between; }
 .file.you{ border-color:var(--accent); }
 .file.you .fn{ color:var(--accent); }
@@ -458,6 +458,21 @@ a{ color:inherit; }
 .credits b{ display:block; font-family:var(--mono); font-weight:500; font-size:10px; letter-spacing:.18em; color:var(--faint); text-transform:uppercase; margin-bottom:8px; }
 .credits span{ display:block; font-size:13px; color:var(--muted); }
 footer{ max-width:var(--maxw); margin:0 auto; padding:22px 32px 40px; font-family:var(--mono); font-size:10.5px; color:var(--ghost); letter-spacing:.04em; display:flex; justify-content:space-between; gap:16px; flex-wrap:wrap; }
+
+
+/* script-driven additions */
+.verified{ display:flex; justify-content:space-between; gap:12px; flex-wrap:wrap; padding:8px 16px; border-bottom:1px solid var(--line-soft);
+  font-family:var(--mono); font-size:10.5px; letter-spacing:.2em; text-transform:uppercase; color:var(--faint); }
+.verified > span:first-child{ color:var(--text); }
+.verified .mono{ letter-spacing:.04em; text-transform:none; }
+.blackout{ position:fixed; inset:0; z-index:150; background:#000; opacity:0; pointer-events:none; transition:opacity .15s; }
+.blackout.on{ opacity:1; transition:none; }
+.figure{ position:absolute; z-index:2; top:-5%; bottom:-5%; width:22%; left:-30%;
+  background:radial-gradient(50% 18% at 50% 16%, rgba(0,0,0,.92), transparent 70%), radial-gradient(48% 55% at 50% 62%, rgba(0,0,0,.85), transparent 75%);
+  filter:blur(8px); opacity:0; pointer-events:none; }
+.figure.pass{ animation:pass 3.8s ease-in-out forwards; }
+@keyframes pass{ 0%{left:-30%; opacity:0} 15%{opacity:.9} 85%{opacity:.9} 100%{left:110%; opacity:0} }
+.redlight{ position:absolute; width:3px; height:3px; border-radius:50%; background:#c4402e; box-shadow:0 0 6px #c4402e; animation:pulse 2.4s infinite; }
 
 /* ---------- responsive ---------- */
 @media (max-width: 1080px){
@@ -496,6 +511,7 @@ footer{ max-width:var(--maxw); margin:0 auto; padding:22px 32px 40px; font-famil
 
 <div class="grain"></div>
 <div class="vignette"></div>
+<div class="blackout" id="blackout"></div>
 
 <!-- =================== GATE =================== -->
 <div class="gate" id="gate">
@@ -508,7 +524,7 @@ footer{ max-width:var(--maxw); margin:0 auto; padding:22px 32px 40px; font-famil
       <button class="btn primary" id="enterBtn">Enter with sound</button>
       <button class="btn" id="enterMuted">Enter muted</button>
     </div>
-    <p class="fine" style="margin-top:22px;">Best experienced with headphones, lights off.</p>
+    <p class="fine" style="margin-top:22px;">Best experienced with headphones, lights off, rain outside.</p>
   </div>
 </div>
 
@@ -519,13 +535,14 @@ footer{ max-width:var(--maxw); margin:0 auto; padding:22px 32px 40px; font-famil
 </div>
 
 <!-- =================== HERO =================== -->
-<header class="hero">
+<header class="hero" style="position:relative;">
+  <i class="redlight" style="top:22px; left:24px;" title=""></i>
   <div class="hero-main">
     <div class="kicker">An original short film</div>
     <h1><span>Purch</span><span class="flick">a</span><span>sed</span></h1>
     <p class="tag">Curiosity destroys boundaries. The internet watches longer than we realize.</p>
     <div class="hero-meta">
-      <div><b>Written &amp; directed</b>Kasen Robinson &amp; Gavin Hensley</div>
+      <div><b>By</b>Kasen Robinson &amp; Gavin Hensley</div>
       <div><b>Genre</b>Psychological horror</div>
       <div><b>Format</b>Internet thriller</div>
       <div><b>Runtime</b>15–18 minutes</div>
@@ -573,7 +590,7 @@ footer{ max-width:var(--maxw); margin:0 auto; padding:22px 32px 40px; font-famil
       <section class="scene" id="s06" data-host="forum.deadthreads.net" data-path="/t/hidden">
         <div class="scene-head">
           <div><div class="num">Scene 06</div><h2>The Link</h2></div>
-          <p class="desc">Cole finds a link on a hidden forum. Every other thread is dead. This one isn't.</p>
+          <p class="desc">Cole scrolls through a hidden forum. Most links are dead. One remains active. He hesitates. He clicks.</p>
         </div>
         <div class="scene-body">
           <div class="panel forum">
@@ -620,7 +637,7 @@ footer{ max-width:var(--maxw); margin:0 auto; padding:22px 32px 40px; font-famil
       <section class="scene" id="s07" data-host="hmkt_live.onion" data-path="/listings?status=live">
         <div class="scene-head">
           <div><div class="num">Scene 07</div><h2>The Auction</h2></div>
-          <p class="desc">Listings. Timers. Watch counts. People aren't products — except here, they are.</p>
+          <p class="desc">A black page loads slowly. Minimal, cold, corporate. Listings. Timers. Viewer counts. Livestream windows.</p>
         </div>
         <div class="scene-body">
           <div class="panel">
@@ -635,12 +652,13 @@ footer{ max-width:var(--maxw); margin:0 auto; padding:22px 32px 40px; font-famil
               <div class="search">⌕ <span>Search listings</span></div>
               <div class="acct"><i></i><span class="handle">guest_0000</span></div>
             </div>
+            <div class="verified"><span>Verified buyers only</span><span class="mono">session: <span class="handle">guest_0000</span> · guest pass</span></div>
             <div class="listings" id="listings">
               <button class="card" data-status="live" data-go="s08">
                 <div class="feed" data-src="victoria"><div class="nosig">connecting</div><span class="chip live badge">Live</span><span class="watch viewers"><span class="vc" data-n="423">423</span> watching</span></div>
                 <div class="card-body">
                   <div class="card-row"><span class="name">Victoria R. · 18</span><span class="lot">LOT A-0417</span></div>
-                  <div class="loc">Living room · cam 2 of 5</div>
+                  <div class="loc">Bedroom · cam 2 of 5</div>
                   <div class="stats"><div><b>Current bid</b><span class="bid">₿ 1.284</span></div><div><b>Ends in</b><span class="timer" data-s="3137">00:52:17</span></div></div>
                 </div>
               </button>
@@ -691,17 +709,17 @@ footer{ max-width:var(--maxw); margin:0 auto; padding:22px 32px 40px; font-famil
       <section class="scene" id="s08" data-host="hmkt_live.onion" data-path="/watch/a-0417-victoria-r">
         <div class="scene-head">
           <div><div class="num">Scene 08</div><h2>Victoria</h2></div>
-          <p class="desc">Eighteen. Watching a movie, eating popcorn. Completely unaware she's the movie.</p>
+          <p class="desc">Victoria Reeves, 18, sits alone eating popcorn while watching a movie. Completely unaware.</p>
         </div>
         <div class="scene-body">
           <div class="panel player">
             <div class="panel-head">
-              <span class="title"><span class="chip live">Live</span> Victoria R. · Lot A-0417</span>
+              <span class="title"><span class="chip live">Live</span> Victoria Reeves · Lot A-0417</span>
               <span class="viewers"><span class="vc" data-n="423">423</span> watching</span>
             </div>
             <div class="feed" data-src="victoria" id="vicFeed">
               <div class="nosig">awaiting signal · media/victoria.mp4</div>
-              <div class="osd"><span class="tl">CAM 02 · Living room</span><span class="tr"><span class="dot pulse"></span>REC</span><span class="bl osd-time">--</span><span class="br">1080P · 24FPS</span></div>
+              <div class="osd"><span class="tl">CAM 02 · Bedroom</span><span class="tr"><span class="dot pulse"></span>REC</span><span class="bl osd-time">--</span><span class="br">1080P · 24FPS</span></div>
             </div>
             <div class="player-bar">
               <button class="unmute">🔈 <span>Muted</span></button>
@@ -710,7 +728,7 @@ footer{ max-width:var(--maxw); margin:0 auto; padding:22px 32px 40px; font-famil
               <button data-cam>CAM 2/5 ⇄</button>
             </div>
             <div class="subject">
-              <div><b>Subject</b><span>Victoria R.</span></div>
+              <div><b>Subject</b><span>Victoria Reeves</span></div>
               <div><b>Current bid</b><span class="gold">₿ 1.284</span></div>
               <div><b>Status</b><span class="warn">Reserved</span></div>
               <div><b>Pickup</b><span class="timer" data-s="3137">00:52:17</span></div>
@@ -728,7 +746,7 @@ footer{ max-width:var(--maxw); margin:0 auto; padding:22px 32px 40px; font-famil
       <section class="scene" id="s09" data-host="hmkt_live.onion" data-path="/watch/a-0430-cole-lewis">
         <div class="scene-head">
           <div><div class="num">Scene 09</div><h2>Cole Lewis</h2></div>
-          <p class="desc">Then his own name appears on the page. Four feeds load. One of them is his bedroom — right now.</p>
+          <p class="desc">Then his real name appears. He clicks. Four camera feeds. Live. He turns around. Nothing. On the stream, something moves behind him.</p>
         </div>
         <div class="scene-body">
           <div class="panel">
@@ -738,10 +756,10 @@ footer{ max-width:var(--maxw); margin:0 auto; padding:22px 32px 40px; font-famil
               <div class="right"><span class="chip live">Live</span><span class="viewers"><span class="vc" data-n="731">731</span></span></div>
             </div>
             <div class="camgrid" id="camgrid">
-              <div class="feed v-dim" data-src="cole-exterior"><div class="nosig">no motion</div><div class="osd"><span class="tl">CAM 01 · Exterior</span><span class="tr"><span class="dot pulse"></span></span><span class="bl osd-time">--</span></div></div>
+              <div class="feed v-dim" data-src="cole-exterior"><div class="nosig">no motion</div><div class="osd"><span class="tl">CAM 01 · Outside the cabin</span><span class="tr"><span class="dot pulse"></span></span><span class="bl osd-time">--</span></div></div>
               <div class="feed v-tight" data-src="cole-kitchen"><div class="nosig">no motion</div><div class="osd"><span class="tl">CAM 02 · Kitchen</span><span class="tr"><span class="dot pulse"></span></span><span class="bl osd-time">--</span></div></div>
               <div class="feed v-ir" data-src="cole-bathroom"><div class="nosig">no motion</div><div class="osd"><span class="tl">CAM 03 · Bathroom</span><span class="tr"><span class="dot pulse"></span></span><span class="bl osd-time">--</span></div></div>
-              <div class="feed hot" data-src="cole"><div class="nosig">awaiting signal · media/cole.mp4</div><div class="osd"><span class="tl">CAM 04 · Guest bedroom ● motion</span><span class="tr"><span class="dot pulse"></span>REC</span><span class="bl osd-time">--</span><span class="br">tap to expand</span></div></div>
+              <div class="feed hot" data-src="cole" id="bedCam"><div class="nosig">awaiting signal · media/cole.mp4</div><div class="figure"></div><div class="osd"><span class="tl">CAM 04 · Guest bedroom ● motion</span><span class="tr"><span class="dot pulse"></span>REC</span><span class="bl osd-time">--</span><span class="br">tap to expand</span></div></div>
             </div>
           </div>
           <div class="panel chat" data-chat="s09">
@@ -756,24 +774,24 @@ footer{ max-width:var(--maxw); margin:0 auto; padding:22px 32px 40px; font-famil
       <section class="scene" id="s12" data-host="hmkt_live.onion" data-path="/watch/a-0430-cole-lewis?persist=1">
         <div class="scene-head">
           <div><div class="num">Scene 12</div><h2>The Chat Returns</h2></div>
-          <p class="desc">He closes the laptop. He disconnects the Wi-Fi. The chat is still there. It never left.</p>
+          <p class="desc">Cole opens the laptop. The site reconnects. He closes the tabs — they reopen. He disconnects the Wi-Fi. Still connected.</p>
         </div>
         <div class="scene-body three">
           <div class="panel player">
             <div class="panel-head">
               <span class="title"><span class="chip live">Live</span> Cole Lewis · Cam 04</span>
-              <span class="viewers"><span class="vc" data-n="1243">1,243</span> watching</span>
+              <span class="viewers"><span class="vc vc-climb" data-n="12">12</span> watching</span>
             </div>
             <div class="feed v-flip" data-src="cole" id="coleFeed">
               <div class="nosig">awaiting signal · media/cole.mp4</div>
               <div class="osd"><span class="tl">CAM 04 · Guest bedroom</span><span class="tr"><span class="dot pulse"></span>REC</span><span class="bl osd-time">--</span><span class="br">source: unknown</span></div>
-              <div class="closed-msg" id="closedMsg"><span>STREAM CLOSED</span><b id="closedSub">reconnecting…</b></div>
+              <div class="closed-msg" id="closedMsg"><span>TAB CLOSED</span><b id="closedSub">reopening…</b></div>
             </div>
             <div class="player-bar">
               <button class="unmute">🔈 <span>Muted</span></button>
               <div class="scrub"></div>
               <span>LIVE</span>
-              <button id="closeStream">✕ Close stream</button>
+              <button id="closeStream">✕ Close tab</button>
             </div>
           </div>
           <div class="side-stack">
@@ -788,7 +806,7 @@ footer{ max-width:var(--maxw); margin:0 auto; padding:22px 32px 40px; font-famil
               </div>
             </div>
             <div class="panel chat" data-chat="s12" style="height:330px;">
-              <div class="panel-head"><span class="title">Chat</span><span class="viewers"><span class="dot pulse"></span><span class="vc" data-n="1243">1,243</span></span></div>
+              <div class="panel-head"><span class="title">Chat</span><span class="viewers"><span class="dot pulse"></span><span class="vc vc-climb" data-n="12">12</span></span></div>
               <div class="chat-log"></div>
               <form class="chat-form"><input placeholder="Say something…" maxlength="120"><button aria-label="Send">→</button></form>
             </div>
@@ -800,7 +818,7 @@ footer{ max-width:var(--maxw); margin:0 auto; padding:22px 32px 40px; font-famil
       <section class="scene" id="s15" data-host="hmkt_live.onion" data-path="/archive/cole-lewis">
         <div class="scene-head">
           <div><div class="num">Scene 15</div><h2>The Archive</h2></div>
-          <p class="desc">Files of Cole, going back more than a decade. Nobody ever asked if he wanted to be kept.</p>
+          <p class="desc">Cole runs upstairs. The site updates. Thousands of files appear. Dates go back over a decade.</p>
         </div>
         <div class="scene-body">
           <div class="panel archive">
@@ -808,7 +826,7 @@ footer{ max-width:var(--maxw); margin:0 auto; padding:22px 32px 40px; font-famil
               <div class="fh">Archive</div>
             </div>
             <div>
-              <div class="files-head"><span class="crumb" id="crumb">/archive/cole-lewis/all</span><span><span id="fileCount">346</span> files</span></div>
+              <div class="files-head"><span class="crumb" id="crumb">ARCHIVE: COLE LEWIS</span><span><span id="fileCount">3,412</span> files</span></div>
               <div class="files" id="files"></div>
             </div>
           </div>
@@ -824,7 +842,8 @@ footer{ max-width:var(--maxw); margin:0 auto; padding:22px 32px 40px; font-famil
 
   <!-- =================== FINALE =================== -->
   <section class="finale" id="finale">
-    <p class="q">You were never just watching.</p>
+    <div class="sub" style="color:var(--accent); margin:0 0 22px;">Subject awareness: complete</div>
+    <p class="q">Curiosity opened a door that may have already been open for years.</p>
     <div class="sub">Session length <span id="finalClock">00:00:00</span> · handle <span class="handle">guest_0000</span></div>
     <div class="actions">
       <button class="btn danger" id="stayBtn">Stay online</button>
@@ -834,10 +853,11 @@ footer{ max-width:var(--maxw); margin:0 auto; padding:22px 32px 40px; font-famil
   </section>
 </div>
 
-<section class="credits">
+<section class="credits" style="position:relative;">
+  <i class="redlight" style="top:20px; right:34px;"></i>
   <div>
     <div class="big">Purchased</div>
-    <p>An original short horror film. Curiosity destroys boundaries. Evil exists quietly. Privacy is an illusion.</p>
+    <p>Curiosity destroys boundaries. Evil exists quietly. Privacy is an illusion. The internet watches longer than we realize.</p>
   </div>
   <div><b>Directed by</b><span>Kasen Robinson</span><span>Gavin Hensley</span></div>
   <div><b>Genre</b><span>Psychological horror</span><span>Internet thriller</span></div>
@@ -910,6 +930,14 @@ function buildAudio(){
   hum.connect(hg).connect(master); hum.start();
   const hum2 = ctx.createOscillator(); hum2.frequency.value = 120; const hg2 = ctx.createGain(); hg2.gain.value = .012;
   hum2.connect(hg2).connect(master); hum2.start();
+  // rain on the windows
+  const rbuf = ctx.createBuffer(1, ctx.sampleRate*2, ctx.sampleRate), rd = rbuf.getChannelData(0);
+  for(let i=0;i<rd.length;i++) rd[i] = (Math.random()*2-1) * (Math.random() < .002 ? 3 : .6);
+  const rain = ctx.createBufferSource(); rain.buffer = rbuf; rain.loop = true;
+  const hp = ctx.createBiquadFilter(); hp.type='highpass'; hp.frequency.value = 900;
+  const rlp = ctx.createBiquadFilter(); rlp.type='lowpass'; rlp.frequency.value = 5200;
+  const rg = ctx.createGain(); rg.gain.value = .14;
+  rain.connect(hp).connect(rlp).connect(rg).connect(master); rain.start();
   return { ctx, master,
     blip(freq=880, dur=.06, vol=.05){
       const o = ctx.createOscillator(), g = ctx.createGain();
@@ -964,12 +992,26 @@ setInterval(() => {
 }, 1000);
 
 /* viewer counts */
-$$('.vc').forEach(el => {
+$$('.vc:not(.vc-climb)').forEach(el => {
   setInterval(() => {
     const n = Math.max(1, +el.dataset.n + rand(-2, 6));
     el.dataset.n = n; el.textContent = n.toLocaleString();
   }, rand(1600, 3200));
 });
+
+/* scene 12: counts climb 12 → 26 → 41 → … once the scene is reached */
+let climbStarted = false;
+function startClimb(){
+  if(climbStarted) return; climbStarted = true;
+  const seq = [12, 26, 41]; let i = 0;
+  const set = n => $$('.vc-climb').forEach(el => { el.dataset.n = n; el.textContent = n.toLocaleString(); });
+  const t = setInterval(() => {
+    i++;
+    if(i < seq.length){ set(seq[i]); return; }
+    set(+$('.vc-climb').dataset.n + rand(1, 7));
+    if(i > 60) clearInterval(t);
+  }, 1700);
+}
 
 /* ---------- video feeds ---------- */
 function mountFeed(feed){
@@ -1015,40 +1057,40 @@ const colorFor = u => userColor[u] || (userColor[u] = COLORS[Object.keys(userCol
 
 const SCRIPTS = {
   s06: [
-    ['Watcher_01','what\'s the link?'], ['NightOwl','new one?'], ['DarkPassenger','let\'s see what he finds'],
-    ['GhostUser','enjoy the ride, kid'], ['Watcher_01','he\'s still hovering over it'], ['NightOwl','click it. click it.'],
+    ['NightOwl','most of these are dead'], ['Watcher_01','one isn\'t'], ['DarkPassenger','he\'s hovering'],
+    ['GhostUser','let him find it'], ['Watcher_01','he hesitated'], ['NightOwl','they always hesitate'],
     ['GhostUser','everyone clicks eventually'], ['SYS','{me} is viewing this thread']
   ],
   s07: [
-    ['BidKing','already reserved A-0417'], ['ZeroDay','how long until pickup?'], ['Silent_Man','A-0421 looks clean'],
-    ['NullPointer','fresh listing incoming'], ['BidKing','put a hold on Emma L.'], ['ZeroDay','timer\'s almost up'],
-    ['SYS','new bid on LOT A-0417'], ['NullPointer','{me} hasn\'t bid yet'], ['Silent_Man','window shopping, {me}?']
+    ['SYS','verified buyers only'], ['BidKing','A-0417 reserved'], ['ZeroDay','pickup window?'],
+    ['Silent_Man','A-0421 install looks clean'], ['NullPointer','new listing pending review'], ['BidKing','hold on A-0426'],
+    ['SYS','new bid on LOT A-0417'], ['NullPointer','{me} hasn\'t bid'], ['Silent_Man','guest pass. just looking, {me}?']
   ],
   s08: [
-    ['Watcher_03','she doesn\'t know.'], ['Hunter23','how long until pickup?'], ['DarkPassenger','already reserved.'],
-    ['GhostUser','popcorn is a nice touch'], ['Watcher_03','she just looked at the door'], ['Hunter23','she can\'t hear us. relax.'],
-    ['SYS','bid placed · ₿ 1.284'], ['GhostUser','switch to cam 3']
+    ['Watcher_03','Pretty.'], ['Hunter23','How long until pickup?'], ['DarkPassenger','Already reserved.'],
+    ['NullPointer','she paused the movie'], ['Watcher_03','she\'s looking at the doorway'], ['Hunter23','nothing there. yet.'],
+    ['SYS','bid placed · ₿ 1.284'], ['SYS','viewer exited: C. Lewis']
   ],
   s09: [
-    ['ZeroDay','is that him?'], ['GhostUser','that\'s Cole'], ['Watcher_12','no way lmao'], ['Hunter23','he has no idea'],
-    ['ZeroDay','check feed 4'], ['GhostUser','that\'s his room. right now.'], ['Watcher_12','he\'s looking at his own listing'],
-    ['SYS','LOT A-0430 · reserve met'], ['DarkPassenger','say hi, Cole']
+    ['SYS','LOT A-0430 · COLE LEWIS · live'], ['ZeroDay','he found his own listing'], ['Watcher_12','took him long enough'],
+    ['Hunter23','he turned around'], ['GhostUser','nothing there. for him.'], ['ZeroDay','check feed 4. behind him.'],
+    ['DarkPassenger','he didn\'t see it'], ['SYS','feed 4 · motion detected']
   ],
   s12: [
-    ['Watcher_01','he closed the laptop'], ['GhostUser','cute.'], ['NullPointer','still connected'],
-    ['DarkPassenger','he unplugged the router lol'], ['ZeroDay','we don\'t need his wifi'], ['Watcher_01','look behind you, Cole'],
-    ['SYS','connection persisted · fallback route'], ['GhostUser','you can close the window, {me}. we won\'t.']
+    ['SYS','stream reconnected'], ['Watcher_01','He saw the ground team.'], ['NullPointer','Window reaction delayed.'],
+    ['ZeroDay','Thought he\'d notice sooner lol .'], ['SYS','tabs reopened'], ['DarkPassenger','wifi off. still connected.'],
+    ['GhostUser','he doesn\'t understand the connection isn\'t his'], ['SYS','route persisted']
   ],
   s15: [
-    ['Watcher_01','that\'s him…'], ['GhostUser','for a long time'], ['DarkPassenger','every birthday. every year.'],
-    ['ZeroDay','you were never alone'], ['Watcher_01','scroll back to \'09'], ['SYS','1 new file added'],
-    ['GhostUser','check the last folder, {me}'], ['NullPointer','we keep everyone']
+    ['SYS','ARCHIVE: COLE LEWIS · unlocked'], ['Watcher_01','there it is'], ['GhostUser','over a decade'],
+    ['DarkPassenger','he stopped breathing'], ['ZeroDay','start at 001'], ['NullPointer','the woods one is my favorite'],
+    ['SYS','1 new file added'], ['GhostUser','check the last folder, {me}']
   ]
 };
 const REPLIES = [
-  'we see you, {me}', 'lol {me} thinks this is a website', 'nice try {me}', '{me} is typing again',
-  'stay a little longer, {me}', '{me}, your camera light is off. doesn\'t matter.', 'what time is it there, {me}? it\'s {time} here too.',
-  'nobody asked you, {me}', 'shh. {me} is watching.'
+  'noted, {me}', 'viewer {me} is participating', 'expected.', '{me} is typing again',
+  'stay a little longer, {me}', 'what time is it there, {me}? {time}. same here.', 'nobody asked, {me}',
+  '{me}: awareness partial', 'log off. we\'ll keep watching.'
 ];
 const sub = t => t.replace(/\{me\}/g, HANDLE).replace(/\{time\}/g, new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}));
 
@@ -1115,6 +1157,8 @@ const sio = new IntersectionObserver(es => es.forEach(e => {
   });
   document.title = s.id === 's06' ? 'PURCHASED' : `PURCHASED — ${s.dataset.host}`;
   if(s.id === 's07') setTimeout(revealNewListing, 3500);
+  if(s.id === 's09') setTimeout(() => { const f = $('#bedCam .figure'); if(f && !f.dataset.done){ f.dataset.done = 1; f.classList.add('pass'); } }, 4000);
+  if(s.id === 's12') startClimb();
 }), { rootMargin:'-45% 0px -45% 0px' });
 scenes.forEach(s => sio.observe(s));
 
@@ -1135,6 +1179,7 @@ document.addEventListener('click', e => {
 /* ---------- scene 06: the link ---------- */
 $('#onionLink').addEventListener('click', e => {
   e.preventDefault();
+  const bo = $('#blackout'); bo.classList.add('on'); setTimeout(() => bo.classList.remove('on'), 900);
   $('#forumList').style.display = 'none';
   $('#connect').classList.add('on');
   setUrl('hmkt_live.onion', '/');
@@ -1175,7 +1220,7 @@ setInterval(() => {
 $('[data-cam]').onclick = function(){
   const f = $('#vicFeed'); const n = (+(f.dataset.cam || 2) % 5) + 1; f.dataset.cam = n;
   f.className = 'feed ' + (['','v-flip','','v-tight','v-ir','v-tight-r'][n] || '') + (f._video && f._video.readyState >= 2 ? ' ready' : '');
-  const rooms = ['','Hallway','Living room','Kitchen','Bedroom','Front door'];
+  const rooms = ['','Hallway','Bedroom','Bedroom doorway','Kitchen','Front door'];
   $('.osd .tl', f).textContent = `CAM 0${n} · ${rooms[n]}`;
   this.textContent = `CAM ${n}/5 ⇄`;
 };
@@ -1193,34 +1238,34 @@ wifi.onclick = () => {
   if(!wifi.classList.contains('on')) return;
   wifi.classList.remove('on');
   $('#connVal').innerHTML = '<span class="dot ok"></span>Connected · fallback';
-  addMsg(chats.s12.log, 'DarkPassenger', 'lol he turned off the wifi');
+  addMsg(chats.s12.log, 'DarkPassenger', 'he disconnected the wifi');
   setTimeout(() => {
     wifi.classList.add('on','deny'); setTimeout(() => wifi.classList.remove('deny'), 400);
-    addMsg(chats.s12.log, 'SYS', 'Wi-Fi re-enabled remotely');
+    addMsg(chats.s12.log, 'SYS', 'still connected');
     addMsg(chats.s12.log, 'GhostUser', 'don\'t do that again, {me}', 'direct');
   }, 1800);
 };
 $('#closeStream').onclick = () => {
   const f = $('#coleFeed'), m = $('#closedMsg');
   f.classList.add('closed'); m.classList.add('show'); $('#closedSub').textContent = 'reconnecting…';
-  setTimeout(() => $('#closedSub').textContent = 'stream is persistent', 1300);
-  setTimeout(() => { f.classList.remove('closed'); m.classList.remove('show'); addMsg(chats.s12.log, 'ZeroDay', 'you can\'t close it. nobody can.'); }, 2900);
+  setTimeout(() => $('#closedSub').textContent = 'tab reopened', 1300);
+  setTimeout(() => { f.classList.remove('closed'); m.classList.remove('show'); addMsg(chats.s12.log, 'SYS', 'tabs reopened'); addMsg(chats.s12.log, 'NullPointer', 'he keeps trying'); }, 2900);
 };
 
 /* ---------- scene 15: archive ---------- */
 const ARCHIVE = [
-  ['2014', 'Cole_age07_firstday.mp4',    'cole', 2,  'v-still'],
-  ['2014', 'Cole_age07_backyard.mp4',    'cole', 5,  'v-still v-flip'],
-  ['2016', 'Cole_age09_birthday.mp4',    'cole', 8,  'v-still'],
-  ['2018', 'Cole_age11_bedroom.mp4',     'cole', 11, 'v-still v-tight'],
-  ['2019', 'Cole_age12_schoolbus.mp4',   'cole', 14, 'v-still v-flip'],
-  ['2021', 'Cole_age14_kitchen.mp4',     'cole', 17, 'v-ir'],
-  ['2023', 'Cole_age16_driving.mp4',     'cole', 20, 'v-still v-tight-r'],
-  ['2025', 'Cole_age18_dorm.mp4',        'cole', 23, 'v-ir v-flip'],
-  ['2026', 'Cole_age19_guestroom.mp4',   'cole', 1,  ''],
-  ['2026', 'Cole_LIVE_' + new Date().toISOString().slice(0,10) + '.mp4', 'cole', 4, 'v-flip'],
+  ['2014', 'ARCHIVE_001 — COLE_PLAYING_IN_WOODS',      'cole', 2,  'v-still'],
+  ['2014', 'ARCHIVE_002 — MOTHER_UNLOADING_GROCERIES', 'cole', 5,  'v-still v-flip'],
+  ['2016', 'ARCHIVE_003 — COLE_SLEEPING_DURING_STORM', 'cole', 8,  'v-ir'],
+  ['2018', 'ARCHIVE_004 — BEDROOM_BEFORE_DESK',        'cole', 11, 'v-still v-tight'],
+  ['2019', 'ARCHIVE_005 — COLE_OUTSIDE_ELEMENTARY',    'cole', 14, 'v-still v-flip'],
+  ['2021', 'ARCHIVE_1187 — CABIN_ARRIVAL_SUMMER',      'cole', 17, 'v-still v-tight-r'],
+  ['2023', 'ARCHIVE_2045 — GUEST_BEDROOM_NIGHT',       'cole', 20, 'v-ir v-flip'],
+  ['2025', 'ARCHIVE_2988 — KITCHEN_SMOKE_DETECTOR',    'cole', 23, 'v-dim'],
+  ['2026', 'ARCHIVE_3411 — DISCORD_CALL_MARCUS',       'cole', 1,  ''],
+  ['2026', 'ARCHIVE_3412 — LIVE_' + new Date().toISOString().slice(0,10), 'cole', 4, 'v-flip'],
 ];
-const YEAR_COUNTS = { '2014':22, '2016':31, '2018':38, '2019':41, '2021':57, '2023':64, '2025':70, '2026':22 };
+const YEAR_COUNTS = { '2014':214, '2016':388, '2018':402, '2019':451, '2021':566, '2023':612, '2025':703, '2026':76 };
 const folders = $('#folders'), files = $('#files');
 function folderBtn(label, count, key){
   const b = document.createElement('button');
@@ -1228,7 +1273,7 @@ function folderBtn(label, count, key){
   b.onclick = () => renderFiles(key);
   folders.appendChild(b);
 }
-folderBtn('All files', 346, 'all');
+folderBtn('All files', '3,412', 'all');
 Object.keys(YEAR_COUNTS).forEach(y => folderBtn(y, YEAR_COUNTS[y], y));
 folderBtn('Viewers', 1, 'viewers');
 
@@ -1248,14 +1293,14 @@ function fileCard(name, date, key, t, variant, extra=''){
 }
 function viewerFile(){
   const today = new Date().toISOString().slice(0,10);
-  const d = fileCard(`${HANDLE}_${today}.mp4`, 'now', null, 0, '', 'you');
+  const d = fileCard(`ARCHIVE_0001 — ${HANDLE.toUpperCase()}_${today}`, 'now', null, 0, '', 'you');
   d.onclick = () => { $('#finale').scrollIntoView({behavior:'smooth'}); };
   return d;
 }
 function renderFiles(k){
   $$('#folders button').forEach(b => b.classList.toggle('on', b.dataset.k === k));
   files.innerHTML = '';
-  $('#crumb').textContent = `/archive/${k === 'viewers' ? 'viewers' : 'cole-lewis/' + k}`;
+  $('#crumb').textContent = k === 'viewers' ? 'ARCHIVE: VIEWERS' : (k === 'all' ? 'ARCHIVE: COLE LEWIS' : `ARCHIVE: COLE LEWIS / ${k}`);
   if(k === 'viewers'){
     files.appendChild(viewerFile()); $('#fileCount').textContent = 1;
     addMsg(chats.s15.log, 'GhostUser', 'found yourself, {me}?', 'direct');
@@ -1264,15 +1309,17 @@ function renderFiles(k){
   const list = ARCHIVE.filter(a => k === 'all' || a[0] === k);
   list.forEach(([y, n, key, t, v]) => files.appendChild(fileCard(n, y, key, t, v)));
   if(k === 'all'){ files.appendChild(viewerFile()); }
-  $('#fileCount').textContent = k === 'all' ? 346 : YEAR_COUNTS[k];
+  $('#fileCount').textContent = k === 'all' ? '3,412' : YEAR_COUNTS[k];
 }
 renderFiles('all');
 
 /* ---------- finale ---------- */
 $('#stayBtn').onclick = () => {
-  $('#finalStatus').textContent = `connection kept alive · ${HANDLE} added to /archive/viewers`;
+  const lines = ['Eye contact.', 'Perfect.', 'Buyer arrived.']; const st = $('#finalStatus'); st.textContent = '';
+  lines.forEach((l, i) => setTimeout(() => { st.textContent = l; }, 900*i));
+  setTimeout(() => { st.textContent = `connection kept alive · ${HANDLE} added to archive`; }, 2900);
   if(soundOn && audio) audio.blip(220, .6, .06);
-  setTimeout(() => $('#s06').scrollIntoView({behavior:'smooth'}), 1800);
+  setTimeout(() => $('#s06').scrollIntoView({behavior:'smooth'}), 4600);
 };
 $('#leaveBtn').onclick = () => {
   const s = $('#finalStatus');

@@ -2,17 +2,16 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>PURCHASED</title>
-<meta name="description" content="PURCHASED — an original short horror film by Kasen Robinson & Gavin Hensley. An immersive companion experience.">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>hmkt_live</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="description" content="A fictional hidden-market experience for the short horror film PURCHASED by Kasen Robinson & Gavin Hensley.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
 <style>
-/* =========================================================
-   PURCHASED — companion site
-   Palette: warm neutral charcoal / stone / bone, one muted clay accent
-   ========================================================= */
+/* Layout: one continuous hidden-market page, full width. Sticky site bar on top,
+   sections flow like a real storefront: listings → featured stream → new listing → telemetry → archive. */
 :root{
   --bg:        #0f0e0d;
   --surface:   #161514;
@@ -24,17 +23,22 @@
   --muted:     #9b958b;
   --faint:     #66615a;
   --ghost:     #45413c;
-  --accent:    #b85c47;   /* muted clay — LIVE / warnings */
+  --accent:    #b85c47;
   --accent-dim:rgba(184,92,71,.16);
-  --sage:      #8a9584;   /* ok / connected */
-  --sand:      #c8b99a;   /* highlights, bids */
+  --sage:      #8a9584;
+  --sand:      #c8b99a;
+  --ink:       #160c09;
+  --black:     #000;
+  --video-bg:  #0a0a09;
 
-  --ui:    'Inter Tight', system-ui, sans-serif;
-  --mono:  'JetBrains Mono', ui-monospace, monospace;
-  --serif: 'Instrument Serif', Georgia, serif;
+  --ui:    'Inter Tight', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --mono:  'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, monospace;
+  --serif: 'Instrument Serif', Georgia, 'Times New Roman', serif;
 
   --radius: 6px;
-  --maxw: 1240px;
+  --maxw: 1400px;
+  --gut: 28px;
+  color-scheme: dark;
 }
 *{ box-sizing:border-box; }
 html{ scroll-behavior:smooth; }
@@ -44,36 +48,39 @@ body{
   -webkit-font-smoothing:antialiased; overflow-x:hidden;
 }
 body.locked{ overflow:hidden; }
-button{ font:inherit; color:inherit; background:none; border:0; cursor:pointer; }
+button{ font:inherit; color:inherit; background:none; border:0; cursor:pointer; padding:0; }
+button:focus-visible, a:focus-visible, input:focus-visible{ outline:1px solid var(--sand); outline-offset:2px; }
 a{ color:inherit; }
 ::selection{ background:var(--accent); color:var(--bg); }
+.wrap{
+  max-width:var(--maxw); margin:0 auto;
+  padding-left:max(var(--gut), env(safe-area-inset-left, 0px));
+  padding-right:max(var(--gut), env(safe-area-inset-right, 0px));
+}
+.mono{ font-family:var(--mono); }
 
 /* ---------- atmosphere ---------- */
 .grain{
-  position:fixed; inset:-50%; z-index:90; pointer-events:none; opacity:.06;
+  position:fixed; inset:-50%; z-index:90; pointer-events:none; opacity:.055;
   background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
   animation:grain 1s steps(4) infinite;
 }
 @keyframes grain{ 0%{transform:translate(0,0)} 25%{transform:translate(-3%,2%)} 50%{transform:translate(2%,-3%)} 75%{transform:translate(-1%,3%)} 100%{transform:translate(0,0)} }
-.vignette{ position:fixed; inset:0; z-index:89; pointer-events:none; box-shadow:inset 0 0 20vw rgba(0,0,0,.7); }
+.vignette{ position:fixed; inset:0; z-index:89; pointer-events:none; box-shadow:inset 0 0 18vw rgba(0,0,0,.6); }
+.blackout{ position:fixed; inset:0; z-index:300; background:var(--black); opacity:0; pointer-events:none; transition:opacity .5s; }
+.blackout.on{ opacity:1; transition:none; }
+.redlight{ position:absolute; width:3px; height:3px; border-radius:50%; background:#c4402e; box-shadow:0 0 6px #c4402e; animation:pulse 2.4s infinite; pointer-events:none; }
 
-/* ---------- gate ---------- */
-.gate{
-  position:fixed; inset:0; z-index:200; background:var(--bg);
-  display:flex; align-items:center; justify-content:center; padding:24px;
-  transition:opacity .9s ease, visibility .9s;
-}
-.gate.gone{ opacity:0; visibility:hidden; }
-.gate-card{ max-width:460px; width:100%; text-align:left; }
-.gate-card .mark{ font-family:var(--mono); font-size:11px; letter-spacing:.24em; color:var(--faint); text-transform:uppercase; }
-.gate-card h1{ font-weight:800; font-size:44px; letter-spacing:.14em; margin:14px 0 18px; text-transform:uppercase; }
-.gate-card p{ color:var(--muted); margin:0 0 12px; font-size:14px; }
-.gate-card .fine{ font-family:var(--mono); font-size:11px; color:var(--faint); letter-spacing:.04em; }
-.gate-actions{ display:flex; gap:10px; margin-top:28px; flex-wrap:wrap; }
+.dot{ width:7px; height:7px; border-radius:50%; background:var(--accent); flex:none; display:inline-block; }
+.dot.pulse{ animation:pulse 1.6s ease-in-out infinite; }
+.dot.ok{ background:var(--sage); }
+@keyframes pulse{ 0%,100%{opacity:1} 50%{opacity:.25} }
+@keyframes rise{ from{opacity:0; transform:translateY(6px)} to{opacity:1; transform:none} }
+
 .btn{
   display:inline-flex; align-items:center; justify-content:center; gap:8px;
   height:42px; padding:0 22px; border-radius:var(--radius);
-  font-size:13px; font-weight:600; letter-spacing:.04em;
+  font-size:13px; font-weight:600; letter-spacing:.03em;
   border:1px solid var(--line); background:var(--surface-2); color:var(--text);
   transition:background .2s, border-color .2s, color .2s;
 }
@@ -82,141 +89,117 @@ a{ color:inherit; }
 .btn.primary:hover{ background:#fff; }
 .btn.danger{ border-color:var(--accent); color:var(--accent); background:transparent; }
 .btn.danger:hover{ background:var(--accent); color:var(--bg); }
-.btn.sm{ height:32px; padding:0 14px; font-size:12px; }
 
-/* ---------- fixed HUD ---------- */
-.hud{
-  position:fixed; bottom:16px; right:16px; z-index:95; display:flex; gap:8px;
-}
-.hud .pill{
-  display:flex; align-items:center; gap:8px; height:30px; padding:0 12px;
-  font-family:var(--mono); font-size:11px; letter-spacing:.08em; color:var(--muted);
-  background:rgba(15,14,13,.78); border:1px solid var(--line); border-radius:999px;
-  backdrop-filter:blur(8px);
-}
-.hud button.pill:hover{ color:var(--text); }
-.dot{ width:7px; height:7px; border-radius:50%; background:var(--accent); flex:none; }
-.dot.pulse{ animation:pulse 1.6s ease-in-out infinite; }
-.dot.ok{ background:var(--sage); }
-@keyframes pulse{ 0%,100%{opacity:1} 50%{opacity:.25} }
-
-/* ---------- hero ---------- */
-.hero{
-  min-height:100vh; display:grid; grid-template-rows:1fr auto;
-  max-width:var(--maxw); margin:0 auto; padding:0 32px;
-}
-.hero-main{ display:flex; flex-direction:column; justify-content:center; padding-top:80px; }
-.hero .kicker{ font-family:var(--mono); font-size:11px; letter-spacing:.28em; color:var(--faint); text-transform:uppercase; }
-.hero h1{
-  font-weight:800; text-transform:uppercase; letter-spacing:.06em; line-height:.9;
-  font-size:clamp(52px, 11.5vw, 168px); margin:18px 0 14px; color:var(--text); white-space:nowrap;
-}
-.hero h1 span{ display:inline-block; }
-.hero h1 .flick{ animation:flick 6s infinite; }
-@keyframes flick{ 0%,92%,100%{opacity:1} 93%{opacity:.2} 94%{opacity:1} 96%{opacity:.4} 97%{opacity:1} }
-.hero .tag{ font-family:var(--serif); font-style:italic; font-size:clamp(22px,3vw,32px); color:var(--muted); max-width:28ch; margin:0; }
-.hero-meta{
-  display:grid; grid-template-columns:repeat(4,1fr); border-top:1px solid var(--line);
-  margin-top:56px;
-}
-.hero-meta div{ padding:16px 16px 16px 0; font-size:12px; color:var(--muted); }
-.hero-meta b{ display:block; font-family:var(--mono); font-weight:500; font-size:10px; letter-spacing:.18em; text-transform:uppercase; color:var(--faint); margin-bottom:4px; }
-
-.session{
-  display:flex; flex-wrap:wrap; gap:6px 22px; align-items:center;
-  border-top:1px solid var(--line); padding:14px 0 22px;
-  font-family:var(--mono); font-size:11px; color:var(--faint); letter-spacing:.04em;
-}
-.session .lbl{ color:var(--accent); letter-spacing:.18em; text-transform:uppercase; }
-.session span b{ color:var(--muted); font-weight:500; }
-.scroll-cue{ margin-left:auto; display:flex; align-items:center; gap:8px; color:var(--muted); }
-.scroll-cue i{ display:block; width:1px; height:22px; background:linear-gradient(var(--muted), transparent); animation:cue 1.8s ease-in-out infinite; }
-@keyframes cue{ 0%{transform:scaleY(0); transform-origin:top} 50%{transform:scaleY(1); transform-origin:top} 51%{transform-origin:bottom} 100%{transform:scaleY(0); transform-origin:bottom} }
-
-/* ---------- browser shell ---------- */
-.shell{ max-width:var(--maxw); margin:0 auto 0; padding:0 32px; }
-.browser{
-  border:1px solid var(--line); border-radius:10px 10px 0 0; background:var(--surface);
-  position:sticky; top:0; z-index:40;
-}
-.chrome{ display:flex; align-items:center; gap:14px; padding:10px 14px; }
-.lights{ display:flex; gap:7px; }
-.lights i{ width:11px; height:11px; border-radius:50%; background:var(--surface-3); border:1px solid var(--line); }
-.navbtns{ display:flex; gap:12px; color:var(--faint); font-size:14px; }
-.url{
-  flex:1; min-width:0; display:flex; align-items:center; gap:10px; height:32px; padding:0 12px;
-  background:var(--bg); border:1px solid var(--line); border-radius:999px;
-  font-family:var(--mono); font-size:12px; color:var(--muted); white-space:nowrap; overflow:hidden;
-}
-.url svg{ flex:none; opacity:.7; }
-.url .host{ color:var(--text); }
-.url .path{ color:var(--muted); }
-.url .loading{ width:0; height:2px; background:var(--sand); position:absolute; left:0; bottom:-1px; transition:width .6s ease; }
-.chrome-right{ font-family:var(--mono); font-size:10px; letter-spacing:.12em; color:var(--faint); text-transform:uppercase; display:flex; align-items:center; gap:6px; }
-.progress{ position:absolute; left:0; bottom:-1px; height:1px; background:var(--accent); width:0; transition:width .15s linear; }
-
-.frame{
-  display:flex; border-left:1px solid var(--line); border-right:1px solid var(--line); background:var(--bg);
-}
-
-/* rail */
-.rail{
-  width:76px; flex:none; border-right:1px solid var(--line);
-  position:sticky; top:53px; align-self:flex-start; height:calc(100vh - 53px);
-  display:flex; flex-direction:column; align-items:center; padding:28px 0;
-}
-.rail .track{ flex:1; width:1px; background:var(--line-soft); }
-.rail button{
-  display:flex; flex-direction:column; align-items:center; gap:6px; padding:6px 0;
-  font-family:var(--mono); font-size:10px; color:var(--faint); letter-spacing:.06em;
-}
-.rail button i{ width:9px; height:9px; border-radius:50%; border:1px solid var(--ghost); background:var(--bg); transition:.3s; }
-.rail button.active{ color:var(--text); }
-.rail button.active i{ background:var(--accent); border-color:var(--accent); box-shadow:0 0 0 4px var(--accent-dim); }
-.rail button.seen i{ background:var(--ghost); }
-
-.scenes{ flex:1; min-width:0; }
-
-/* ---------- scene scaffolding ---------- */
-.scene{ border-bottom:1px solid var(--line); padding:56px 40px 60px; scroll-margin-top:52px; }
-.scene-head{ display:flex; justify-content:space-between; align-items:flex-end; gap:24px; margin-bottom:28px; flex-wrap:wrap; }
-.scene-head .num{ font-family:var(--mono); font-size:11px; letter-spacing:.24em; color:var(--accent); text-transform:uppercase; }
-.scene-head h2{ font-size:clamp(28px,4vw,44px); font-weight:700; letter-spacing:-.01em; margin:6px 0 0; }
-.scene-head .desc{ font-family:var(--serif); font-style:italic; font-size:19px; line-height:1.4; color:var(--muted); max-width:40ch; margin:0; }
-.scene-body{ display:grid; grid-template-columns:minmax(0,1fr) 320px; gap:20px; align-items:start; }
-
-.panel{ border:1px solid var(--line); background:var(--surface); border-radius:var(--radius); overflow:hidden; }
-.panel-head{
-  display:flex; justify-content:space-between; align-items:center; gap:10px;
-  height:42px; padding:0 14px; border-bottom:1px solid var(--line-soft);
-  font-size:12px; color:var(--muted);
-}
-.panel-head .title{ font-weight:600; color:var(--text); display:flex; align-items:center; gap:8px; }
-.mono{ font-family:var(--mono); }
 .chip{
   display:inline-flex; align-items:center; gap:6px; height:22px; padding:0 8px; border-radius:4px;
   font-family:var(--mono); font-size:10px; letter-spacing:.1em; text-transform:uppercase;
-  background:var(--surface-3); color:var(--muted);
+  background:var(--surface-3); color:var(--muted); white-space:nowrap;
 }
-.chip.live{ background:var(--accent); color:#160c09; font-weight:600; }
-.chip.live::before{ content:""; width:5px; height:5px; border-radius:50%; background:#160c09; animation:pulse 1.4s infinite; }
-.chip.ok{ color:var(--sage); }
-.viewers{ display:inline-flex; align-items:center; gap:6px; font-family:var(--mono); font-size:11px; color:var(--muted); }
+.chip.live{ background:var(--accent); color:var(--ink); font-weight:600; }
+.chip.live::before{ content:""; width:5px; height:5px; border-radius:50%; background:var(--ink); animation:pulse 1.4s infinite; }
+.viewers{ display:inline-flex; align-items:center; gap:6px; font-family:var(--mono); font-size:11px; color:var(--muted); font-variant-numeric:tabular-nums; }
 
-/* ---------- media feed (video w/ fallback) ---------- */
-.feed{ position:relative; background:#0a0a09; overflow:hidden; aspect-ratio:16/9; isolation:isolate; }
+/* =================== ENTRY: the forum thread =================== */
+.gate{
+  position:fixed; inset:0; z-index:200; background:var(--bg); overflow-y:auto;
+  display:flex; align-items:center; justify-content:center;
+  padding:max(24px, env(safe-area-inset-top, 0px)) max(16px, env(safe-area-inset-right, 0px)) max(24px, env(safe-area-inset-bottom, 0px)) max(16px, env(safe-area-inset-left, 0px));
+  transition:opacity .9s ease, visibility .9s;
+}
+.gate.gone{ opacity:0; visibility:hidden; }
+.forum{ width:100%; max-width:640px; }
+.forum-top{ display:flex; justify-content:space-between; align-items:baseline; gap:12px; margin-bottom:14px; font-family:var(--mono); font-size:11px; color:var(--faint); }
+.forum-top b{ color:var(--muted); font-weight:500; }
+.forum-box{ border:1px solid var(--line); border-radius:var(--radius); background:var(--surface); overflow:hidden; }
+.thread{
+  display:grid; grid-template-columns:36px minmax(0,1fr) auto; gap:12px; align-items:center;
+  padding:13px 16px; border-bottom:1px solid var(--line-soft); font-size:13px;
+}
+.thread:last-child{ border-bottom:0; }
+.thread .ic{ width:30px; height:30px; border-radius:50%; background:var(--surface-3); display:flex; align-items:center; justify-content:center; font-family:var(--mono); font-size:9.5px; color:var(--faint); }
+.thread .ttl{ color:var(--muted); }
+.thread .sub{ font-family:var(--mono); font-size:10.5px; color:var(--ghost); margin-top:2px; }
+.thread .stat{ font-family:var(--mono); font-size:10.5px; color:var(--ghost); text-align:right; }
+.thread.dead .ttl{ color:var(--ghost); text-decoration:line-through; text-decoration-color:var(--line); }
+.thread.alive{ background:linear-gradient(90deg, var(--accent-dim), transparent 70%); }
+.thread.alive .ttl{ color:var(--text); }
+.thread.alive .ic{ background:var(--accent); color:var(--ink); }
+.onion-link{
+  display:inline-flex; align-items:center; gap:6px; margin-top:6px; font-family:var(--mono); font-size:12.5px;
+  color:var(--sand); text-decoration:underline; text-underline-offset:3px; text-decoration-color:rgba(200,185,154,.35);
+}
+.onion-link:hover{ text-decoration-color:var(--sand); }
+.connect{ display:none; padding:36px 22px; flex-direction:column; align-items:center; text-align:center; }
+.connect.on{ display:flex; }
+.steps{ font-family:var(--mono); font-size:11.5px; color:var(--faint); width:100%; max-width:380px; text-align:left; }
+.steps div{ opacity:0; padding:3px 0; display:flex; justify-content:space-between; gap:12px; }
+.steps div.show{ opacity:1; transition:opacity .3s; }
+.steps em{ font-style:normal; color:var(--sage); }
+.landing{ display:none; margin-top:26px; }
+.landing.show{ display:block; animation:rise .6s ease both; }
+.landing .logo{ font-weight:800; font-size:34px; letter-spacing:.01em; }
+.landing .logo span{ color:var(--accent); }
+.landing .vb{ font-family:var(--mono); font-size:10.5px; letter-spacing:.24em; color:var(--faint); text-transform:uppercase; margin-top:4px; }
+.landing .row{ display:flex; gap:10px; justify-content:center; margin-top:22px; flex-wrap:wrap; }
+.notice{ margin-top:18px; font-family:var(--mono); font-size:10.5px; line-height:1.6; color:var(--ghost); max-width:62ch; }
+
+/* =================== SITE BAR =================== */
+body::before{ content:""; position:fixed; inset:0 0 auto; height:env(safe-area-inset-top, 0px); z-index:61; background:var(--surface); }
+.sitebar{
+  position:sticky; top:env(safe-area-inset-top, 0px); z-index:60;
+  background:rgba(22,21,20,.92); backdrop-filter:blur(10px); border-bottom:1px solid var(--line);
+}
+.sitebar .wrap{ display:flex; align-items:center; gap:22px; height:56px; }
+.brand{ font-weight:800; font-size:19px; letter-spacing:.01em; flex:none; }
+.brand span{ color:var(--accent); }
+.sitenav{ display:flex; gap:2px; }
+.sitenav button{ height:32px; padding:0 12px; border-radius:5px; font-size:12.5px; color:var(--faint); white-space:nowrap; }
+.sitenav button:hover{ color:var(--text); }
+.sitenav button.on{ background:var(--surface-3); color:var(--text); }
+.addr{ font-family:var(--mono); font-size:11px; color:var(--faint); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; min-width:0; flex:1; text-align:right; }
+.addr b{ color:var(--muted); font-weight:500; }
+.bar-right{ display:flex; align-items:center; gap:8px; flex:none; }
+.pill{
+  display:flex; align-items:center; gap:7px; height:28px; padding:0 11px;
+  font-family:var(--mono); font-size:10.5px; letter-spacing:.08em; color:var(--muted);
+  border:1px solid var(--line); border-radius:999px; font-variant-numeric:tabular-nums;
+}
+button.pill:hover{ color:var(--text); }
+.acct{ display:flex; align-items:center; gap:8px; font-family:var(--mono); font-size:11px; color:var(--muted); }
+.acct i{ width:26px; height:26px; border-radius:50%; background:var(--surface-3); display:block; border:1px solid var(--line); }
+.ticker{
+  border-bottom:1px solid var(--line-soft); background:var(--bg); overflow:hidden; white-space:nowrap;
+  font-family:var(--mono); font-size:10.5px; letter-spacing:.06em; color:var(--faint); height:30px; display:flex; align-items:center;
+}
+.ticker .run{ display:inline-flex; gap:44px; padding-left:100%; animation:tick 60s linear infinite; }
+.ticker b{ color:var(--muted); font-weight:500; }
+.ticker .hot{ color:var(--accent); }
+@keyframes tick{ to{ transform:translateX(-100%); } }
+
+/* =================== SECTIONS =================== */
+.sec{ padding-block:56px; border-bottom:1px solid var(--line-soft); scroll-margin-top:86px; }
+.sec-head{ display:flex; justify-content:space-between; align-items:flex-end; gap:16px 28px; margin-bottom:22px; flex-wrap:wrap; }
+.sec-head h2{ margin:0; font-size:24px; font-weight:700; letter-spacing:-.01em; display:flex; align-items:center; gap:12px; text-wrap:balance; }
+.sec-head .meta{ font-family:var(--mono); font-size:11px; color:var(--faint); letter-spacing:.04em; }
+.split{ display:grid; grid-template-columns:minmax(0,1fr) 340px; gap:20px; align-items:start; }
+.panel{ border:1px solid var(--line); background:var(--surface); border-radius:var(--radius); overflow:hidden; min-width:0; }
+.panel-head{
+  display:flex; justify-content:space-between; align-items:center; gap:10px;
+  min-height:44px; padding:0 14px; border-bottom:1px solid var(--line-soft); font-size:12px; color:var(--muted);
+}
+.panel-head .title{ font-weight:600; color:var(--text); display:flex; align-items:center; gap:8px; min-width:0; }
+
+/* ---------- media feed ---------- */
+.feed{ position:relative; background:var(--video-bg); overflow:hidden; aspect-ratio:16/9; max-width:100%; isolation:isolate; }
 .feed video{
   position:absolute; inset:0; width:100%; height:100%; object-fit:cover;
-  filter:saturate(.55) contrast(1.06) brightness(.88);
-  opacity:0; transition:opacity .8s ease;
+  filter:saturate(.55) contrast(1.06) brightness(.88); opacity:0; transition:opacity .8s ease;
 }
 .feed.ready video{ opacity:1; }
 .feed .nosig{
-  position:absolute; inset:0; display:flex; align-items:center; justify-content:center;
-  background:
-    radial-gradient(120% 80% at 50% 40%, #23211e 0%, #0d0c0b 70%);
-  font-family:var(--mono); font-size:10px; letter-spacing:.24em; color:var(--faint); text-transform:uppercase;
-  transition:opacity .6s;
+  position:absolute; inset:0; display:flex; align-items:center; justify-content:center; text-align:center; padding:12px;
+  background:radial-gradient(120% 80% at 50% 40%, #23211e 0%, #0d0c0b 70%);
+  font-family:var(--mono); font-size:10px; letter-spacing:.22em; color:var(--faint); text-transform:uppercase; transition:opacity .6s;
 }
 .feed .nosig::before{
   content:""; position:absolute; inset:-50%; opacity:.14;
@@ -224,43 +207,44 @@ a{ color:inherit; }
   animation:grain .5s steps(3) infinite;
 }
 .feed.ready .nosig{ opacity:0; }
-.feed::after{ /* scanlines */
-  content:""; position:absolute; inset:0; pointer-events:none; z-index:3;
-  background:repeating-linear-gradient(to bottom, rgba(255,255,255,.025) 0 1px, transparent 1px 3px);
-}
-.feed .osd{
-  position:absolute; inset:0; z-index:4; pointer-events:none; padding:10px 12px;
-  font-family:var(--mono); font-size:10.5px; letter-spacing:.08em; color:rgba(231,226,216,.85);
-  text-shadow:0 1px 2px rgba(0,0,0,.8); text-transform:uppercase;
+.feed::after{ content:""; position:absolute; inset:0; pointer-events:none; z-index:3; background:repeating-linear-gradient(to bottom, rgba(255,255,255,.025) 0 1px, transparent 1px 3px); }
+.osd{
+  position:absolute; inset:0; z-index:4; pointer-events:none;
+  font-family:var(--mono); font-size:10.5px; letter-spacing:.08em; color:rgba(231,226,216,.88);
+  text-shadow:0 1px 2px rgba(0,0,0,.85); text-transform:uppercase;
 }
 .osd .tl{ position:absolute; top:10px; left:12px; }
 .osd .tr{ position:absolute; top:10px; right:12px; display:flex; align-items:center; gap:6px; }
-.osd .bl{ position:absolute; bottom:10px; left:12px; }
+.osd .bl{ position:absolute; bottom:10px; left:12px; font-variant-numeric:tabular-nums; }
 .osd .br{ position:absolute; bottom:10px; right:12px; }
-/* camera variants so a single clip can read as different angles */
 .v-flip video{ transform:scaleX(-1); }
 .v-tight video{ transform:scale(1.55); transform-origin:30% 40%; }
 .v-tight-r video{ transform:scale(1.7) scaleX(-1); transform-origin:70% 60%; }
 .v-ir video{ filter:grayscale(1) contrast(1.35) brightness(.8) sepia(.12); }
 .v-dim video{ filter:saturate(.3) brightness(.55) contrast(1.2); }
 .v-still video{ filter:grayscale(.85) sepia(.35) contrast(1.05) brightness(.8); }
+.figure{
+  position:absolute; z-index:2; top:-5%; bottom:-5%; width:22%; left:-30%;
+  background:radial-gradient(50% 18% at 50% 16%, rgba(0,0,0,.92), transparent 70%), radial-gradient(48% 55% at 50% 62%, rgba(0,0,0,.85), transparent 75%);
+  filter:blur(8px); opacity:0; pointer-events:none;
+}
+.figure.pass{ animation:pass 3.8s ease-in-out forwards; }
+@keyframes pass{ 0%{left:-30%; opacity:0} 15%{opacity:.9} 85%{opacity:.9} 100%{left:110%; opacity:0} }
 
 /* ---------- chat ---------- */
 .chat{ display:flex; flex-direction:column; height:520px; }
 .chat-log{
   flex:1; overflow:hidden; padding:12px 14px; display:flex; flex-direction:column; justify-content:flex-end; gap:9px;
-  mask-image:linear-gradient(transparent, #000 22%);
-  -webkit-mask-image:linear-gradient(transparent, #000 22%);
+  mask-image:linear-gradient(transparent, #000 22%); -webkit-mask-image:linear-gradient(transparent, #000 22%);
 }
-.msg{ font-size:13px; line-height:1.4; animation:msgin .35s ease both; }
+.msg{ font-size:13px; line-height:1.4; animation:rise .35s ease both; overflow-wrap:anywhere; }
 .msg .t{ font-family:var(--mono); font-size:10px; color:var(--ghost); margin-right:6px; }
 .msg .who{ font-weight:600; margin-right:6px; }
 .msg .txt{ color:var(--muted); }
-.msg.sys{ font-family:var(--mono); font-size:11px; color:var(--faint); }
+.msg.sys{ font-family:var(--mono); font-size:11px; }
 .msg.sys .txt{ color:var(--faint); }
 .msg.me .txt{ color:var(--text); }
 .msg.direct .txt{ color:var(--sand); }
-@keyframes msgin{ from{opacity:0; transform:translateY(6px)} to{opacity:1; transform:none} }
 .chat-form{ display:flex; gap:8px; padding:10px; border-top:1px solid var(--line-soft); }
 .chat-form input{
   flex:1; min-width:0; height:36px; padding:0 12px; border-radius:var(--radius);
@@ -271,120 +255,65 @@ a{ color:inherit; }
 .chat-form button{ height:36px; width:36px; border-radius:var(--radius); background:var(--surface-3); display:flex; align-items:center; justify-content:center; color:var(--muted); }
 .chat-form button:hover{ color:var(--text); }
 
-/* ---------- scene 06: forum ---------- */
-.forum{ display:grid; grid-template-rows:auto 1fr; }
-.forum-bar{
-  display:flex; align-items:center; justify-content:space-between; gap:12px; padding:12px 16px;
-  border-bottom:1px solid var(--line-soft); font-family:var(--mono); font-size:11px; color:var(--faint);
-}
-.forum-bar b{ color:var(--muted); font-weight:500; }
-.thread{
-  display:grid; grid-template-columns:40px 1fr auto; gap:12px; align-items:center;
-  padding:12px 16px; border-bottom:1px solid var(--line-soft); font-size:13px;
-}
-.thread .ic{ width:32px; height:32px; border-radius:50%; background:var(--surface-3); display:flex; align-items:center; justify-content:center; font-family:var(--mono); font-size:10px; color:var(--faint); }
-.thread .ttl{ color:var(--muted); }
-.thread .sub{ font-family:var(--mono); font-size:10.5px; color:var(--ghost); margin-top:2px; }
-.thread .stat{ font-family:var(--mono); font-size:10.5px; color:var(--ghost); text-align:right; }
-.thread.dead .ttl{ color:var(--ghost); text-decoration:line-through; text-decoration-color:var(--line); }
-.thread.alive{ background:linear-gradient(90deg, var(--accent-dim), transparent 70%); }
-.thread.alive .ttl{ color:var(--text); }
-.thread.alive .ic{ background:var(--accent); color:#160c09; }
-.onion-link{
-  display:inline-flex; align-items:center; gap:6px; margin-top:6px; font-family:var(--mono); font-size:12px;
-  color:var(--sand); text-decoration:underline; text-underline-offset:3px; text-decoration-color:rgba(200,185,154,.35);
-}
-.onion-link:hover{ text-decoration-color:var(--sand); }
-
-.connect{
-  display:none; padding:40px 24px; min-height:300px; flex-direction:column; justify-content:center; align-items:center; text-align:center;
-}
-.connect.on{ display:flex; }
-.connect .steps{ font-family:var(--mono); font-size:11.5px; color:var(--faint); text-align:left; width:100%; max-width:380px; }
-.connect .steps div{ opacity:0; padding:3px 0; display:flex; justify-content:space-between; }
-.connect .steps div.show{ opacity:1; transition:opacity .3s; }
-.connect .steps div em{ font-style:normal; color:var(--sage); }
-.connect .landing{ display:none; margin-top:24px; }
-.connect .landing.show{ display:block; animation:msgin .6s ease both; }
-.logo{ font-weight:800; letter-spacing:.02em; font-size:28px; }
-.logo small{ font-family:var(--mono); font-weight:400; font-size:11px; letter-spacing:.2em; color:var(--faint); display:block; margin-top:4px; text-transform:uppercase; }
-
-/* ---------- scene 07: market ---------- */
-.market-nav{
-  display:flex; align-items:center; gap:18px; padding:0 16px; height:52px; border-bottom:1px solid var(--line-soft);
-}
-.market-nav .brand{ font-weight:800; font-size:16px; letter-spacing:.02em; }
-.market-nav .brand span{ color:var(--accent); }
-.tabs{ display:flex; gap:2px; }
-.tabs button{ height:30px; padding:0 12px; border-radius:5px; font-size:12px; color:var(--faint); }
-.tabs button.on{ background:var(--surface-3); color:var(--text); }
-.tabs button:hover{ color:var(--text); }
-.market-nav .search{
-  margin-left:auto; height:30px; width:200px; border-radius:5px; border:1px solid var(--line);
-  display:flex; align-items:center; gap:8px; padding:0 10px; color:var(--faint); font-size:12px;
-}
-.market-nav .acct{ font-family:var(--mono); font-size:11px; color:var(--muted); display:flex; align-items:center; gap:8px; }
-.market-nav .acct i{ width:26px; height:26px; border-radius:50%; background:var(--surface-3); display:block; }
-
-.listings{ display:grid; grid-template-columns:repeat(2, minmax(0,1fr)); gap:14px; padding:16px; }
+/* ---------- listings ---------- */
+.filters{ display:flex; gap:2px; }
+.filters button{ height:30px; padding:0 12px; border-radius:5px; font-size:12px; color:var(--faint); }
+.filters button.on{ background:var(--surface-3); color:var(--text); }
+.filters button:hover{ color:var(--text); }
+.listings{ display:grid; grid-template-columns:repeat(2, minmax(0,1fr)); gap:14px; }
 .card{
-  border:1px solid var(--line); border-radius:var(--radius); background:var(--surface-2); overflow:hidden;
+  border:1px solid var(--line); border-radius:var(--radius); background:var(--surface); overflow:hidden;
   transition:border-color .2s, transform .2s; cursor:pointer; text-align:left; display:block; width:100%;
 }
 .card:hover{ border-color:var(--ghost); transform:translateY(-2px); }
 .card .feed{ aspect-ratio:16/10; }
-.card .feed .badge{ position:absolute; top:10px; left:10px; z-index:5; }
-.card .feed .watch{ position:absolute; top:10px; right:10px; z-index:5; background:rgba(15,14,13,.75); padding:2px 8px; border-radius:4px; }
+.card .badge{ position:absolute; top:10px; left:10px; z-index:5; }
+.card .watch{ position:absolute; top:10px; right:10px; z-index:5; background:rgba(15,14,13,.75); padding:2px 8px; border-radius:4px; }
 .card-body{ padding:12px 14px 14px; }
 .card-row{ display:flex; justify-content:space-between; align-items:baseline; gap:10px; }
 .card .name{ font-weight:600; font-size:15px; }
 .card .lot{ font-family:var(--mono); font-size:10.5px; color:var(--faint); }
 .card .loc{ font-size:12px; color:var(--faint); margin-top:2px; }
 .card .stats{ display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-top:12px; padding-top:12px; border-top:1px solid var(--line-soft); }
-.card .stats b{ display:block; font-family:var(--mono); font-weight:500; font-size:9.5px; letter-spacing:.16em; color:var(--faint); text-transform:uppercase; }
-.card .stats span{ font-family:var(--mono); font-size:14px; }
-.card .stats .bid{ color:var(--sand); }
+.stats b, .kv b{ display:block; font-family:var(--mono); font-weight:500; font-size:9.5px; letter-spacing:.16em; color:var(--faint); text-transform:uppercase; }
+.card .stats span{ font-family:var(--mono); font-size:14px; font-variant-numeric:tabular-nums; }
+.bid{ color:var(--sand); }
 .card.sold{ opacity:.5; }
 .card.sold .feed video{ filter:grayscale(1) brightness(.5); }
-.card.new{ display:none; }
-.card.new.show{ display:block; animation:newcard .9s ease both; border-color:var(--accent); }
+.card.new{ display:none; border-color:var(--accent); }
+.card.new.show{ display:block; animation:newcard .9s ease both; }
 @keyframes newcard{ from{opacity:0; transform:translateY(10px) scale(.98)} to{opacity:1; transform:none} }
-.toast{
-  margin:0 16px 16px; padding:10px 14px; border-radius:var(--radius); border:1px solid var(--line);
-  font-family:var(--mono); font-size:11.5px; color:var(--muted); display:none; align-items:center; gap:10px;
-}
-.toast.show{ display:flex; animation:msgin .5s ease both; }
 
-/* ---------- scene 08/12: player ---------- */
-.player .feed{ aspect-ratio:16/9; }
+/* ---------- player ---------- */
 .player-bar{
   display:flex; align-items:center; gap:14px; padding:0 14px; height:46px; border-top:1px solid var(--line-soft);
   font-family:var(--mono); font-size:11px; color:var(--muted);
 }
-.player-bar .scrub{ flex:1; height:3px; border-radius:2px; background:var(--surface-3); position:relative; overflow:hidden; }
-.player-bar .scrub::after{ content:""; position:absolute; inset:0; right:0; background:var(--accent); }
-.player-bar button{ display:flex; align-items:center; gap:6px; color:var(--muted); }
+.player-bar .scrub{ flex:1; height:3px; border-radius:2px; background:var(--accent); }
+.player-bar button{ display:flex; align-items:center; gap:6px; color:var(--muted); white-space:nowrap; }
 .player-bar button:hover{ color:var(--text); }
-.subject{
-  display:grid; grid-template-columns:repeat(4, minmax(0,1fr)); border-top:1px solid var(--line-soft);
+.kv{ display:grid; grid-template-columns:repeat(4, minmax(0,1fr)); border-top:1px solid var(--line-soft); }
+.kv div{ padding:12px 14px; border-right:1px solid var(--line-soft); min-width:0; }
+.kv div:last-child{ border-right:0; }
+.kv span{ font-size:13px; font-variant-numeric:tabular-nums; }
+.warn{ color:var(--accent); }
+.player .feed.closed video{ opacity:0; }
+.closed-msg{
+  position:absolute; inset:0; z-index:6; display:none; align-items:center; justify-content:center; flex-direction:column; gap:8px;
+  background:rgba(10,10,9,.94); font-family:var(--mono); font-size:12px; color:var(--muted); letter-spacing:.08em; text-align:center;
 }
-.subject div{ padding:12px 14px; border-right:1px solid var(--line-soft); }
-.subject div:last-child{ border-right:0; }
-.subject b{ display:block; font-family:var(--mono); font-weight:500; font-size:9.5px; letter-spacing:.16em; color:var(--faint); text-transform:uppercase; margin-bottom:2px; }
-.subject span{ font-size:13px; }
-.subject .warn{ color:var(--accent); }
-.subject .gold{ color:var(--sand); }
+.closed-msg.show{ display:flex; }
+.closed-msg b{ color:var(--accent); font-weight:500; }
 
-/* ---------- scene 09: camgrid ---------- */
-.reveal-banner{
-  display:flex; align-items:center; gap:14px; padding:14px 16px; border-bottom:1px solid var(--line-soft);
+/* ---------- new listing (Cole) ---------- */
+.reveal{ padding-top:72px; }
+.reveal .kicker{ display:flex; gap:10px; align-items:center; flex-wrap:wrap; font-family:var(--mono); font-size:11px; letter-spacing:.16em; text-transform:uppercase; color:var(--faint); }
+.reveal h2{
+  margin:14px 0 6px; font-weight:800; text-transform:uppercase; letter-spacing:.02em; line-height:.92;
+  font-size:clamp(48px, 10vw, 148px); text-wrap:balance;
 }
-.reveal-banner .av{ width:44px; height:44px; border-radius:50%; overflow:hidden; flex:none; position:relative; background:var(--surface-3); }
-.reveal-banner .av .feed{ position:absolute; inset:0; aspect-ratio:auto; }
-.reveal-banner .av .feed::after{ display:none; }
-.reveal-banner .nm{ font-weight:700; font-size:17px; }
-.reveal-banner .meta{ font-family:var(--mono); font-size:11px; color:var(--faint); }
-.reveal-banner .right{ margin-left:auto; display:flex; gap:8px; align-items:center; }
+.reveal .sub{ font-family:var(--mono); font-size:12px; color:var(--muted); display:flex; gap:8px 22px; flex-wrap:wrap; margin-bottom:28px; }
+.reveal .sub b{ color:var(--faint); font-weight:400; }
 .camgrid{ display:grid; grid-template-columns:1fr 1fr; gap:2px; background:var(--line-soft); }
 .camgrid .feed{ aspect-ratio:16/10; cursor:pointer; }
 .camgrid .feed.hot{ outline:1px solid var(--accent); outline-offset:-1px; }
@@ -392,43 +321,36 @@ a{ color:inherit; }
 .camgrid.solo{ grid-template-columns:1fr; }
 .camgrid.solo .feed:not(.focus){ display:none; }
 
-/* ---------- scene 12: system ---------- */
-.scene-body.three{ grid-template-columns:minmax(0,1fr) 300px; }
-.side-stack{ display:flex; flex-direction:column; gap:20px; }
-.sys-list{ padding:6px 0; }
+/* ---------- telemetry ---------- */
+.tele{ display:grid; grid-template-columns:minmax(0,1fr) 320px; gap:20px; align-items:start; }
+.side-stack{ display:flex; flex-direction:column; gap:20px; min-width:0; }
 .sys-row{
-  display:flex; align-items:center; justify-content:space-between; gap:10px; padding:10px 14px;
+  display:flex; align-items:center; justify-content:space-between; gap:10px; padding:11px 14px;
   font-size:12.5px; color:var(--muted); border-bottom:1px solid var(--line-soft);
 }
 .sys-row:last-child{ border-bottom:0; }
 .sys-row .val{ font-family:var(--mono); font-size:11px; letter-spacing:.06em; text-transform:uppercase; display:flex; align-items:center; gap:6px; }
-.sys-row .val.ok{ color:var(--sage); }
-.sys-row .val.bad{ color:var(--accent); }
+.val.ok{ color:var(--sage); }
+.val.bad{ color:var(--accent); }
 .switch{ width:34px; height:20px; border-radius:999px; background:var(--surface-3); position:relative; transition:.25s; flex:none; }
 .switch::after{ content:""; position:absolute; top:3px; left:3px; width:14px; height:14px; border-radius:50%; background:var(--muted); transition:.25s; }
 .switch.on{ background:var(--sage); }
 .switch.on::after{ left:17px; background:var(--bg); }
 .switch.deny{ animation:shake .35s; }
 @keyframes shake{ 25%{transform:translateX(-3px)} 75%{transform:translateX(3px)} }
-.player .feed.closed video{ opacity:.0; }
-.player .feed .closed-msg{
-  position:absolute; inset:0; z-index:6; display:none; align-items:center; justify-content:center; flex-direction:column; gap:8px;
-  background:rgba(10,10,9,.92); font-family:var(--mono); font-size:12px; color:var(--muted); letter-spacing:.08em; text-align:center;
-}
-.player .feed .closed-msg.show{ display:flex; }
-.closed-msg b{ color:var(--accent); font-weight:500; }
 
-/* ---------- scene 15: archive ---------- */
-.archive{ display:grid; grid-template-columns:180px minmax(0,1fr); min-height:520px; }
+/* ---------- archive ---------- */
+.arch-title{ font-family:var(--mono); font-weight:500; font-size:clamp(22px, 3.2vw, 36px); letter-spacing:.04em; margin:0; }
+.archive{ display:grid; grid-template-columns:190px minmax(0,1fr); min-height:520px; }
 .folders{ border-right:1px solid var(--line-soft); padding:10px 0; font-size:12.5px; }
 .folders .fh{ padding:6px 14px 8px; font-family:var(--mono); font-size:9.5px; letter-spacing:.18em; color:var(--faint); text-transform:uppercase; }
 .folders button{ display:flex; justify-content:space-between; width:100%; padding:7px 14px; color:var(--muted); text-align:left; }
-.folders button span{ font-family:var(--mono); font-size:10.5px; color:var(--ghost); }
+.folders button span{ font-family:var(--mono); font-size:10.5px; color:var(--ghost); font-variant-numeric:tabular-nums; }
 .folders button:hover, .folders button.on{ background:var(--surface-2); color:var(--text); }
 .folders button.on{ box-shadow:inset 2px 0 0 var(--accent); }
-.files-head{ display:flex; justify-content:space-between; align-items:center; padding:12px 16px; border-bottom:1px solid var(--line-soft); font-size:12px; color:var(--faint); }
+.files-head{ display:flex; justify-content:space-between; align-items:center; gap:12px; padding:12px 16px; border-bottom:1px solid var(--line-soft); font-size:12px; color:var(--faint); }
 .files-head .crumb{ font-family:var(--mono); font-size:11.5px; color:var(--muted); }
-.files{ display:grid; grid-template-columns:repeat(auto-fill, minmax(150px, 1fr)); gap:12px; padding:16px; }
+.files{ display:grid; grid-template-columns:repeat(auto-fill, minmax(160px, 1fr)); gap:12px; padding:16px; }
 .file{ text-align:left; border-radius:var(--radius); overflow:hidden; border:1px solid var(--line-soft); background:var(--surface-2); transition:border-color .2s; }
 .file:hover{ border-color:var(--ghost); }
 .file .feed{ aspect-ratio:4/3; }
@@ -437,69 +359,63 @@ a{ color:inherit; }
 .file .fd{ padding:0 10px 9px; font-family:var(--mono); font-size:10px; color:var(--faint); display:flex; justify-content:space-between; }
 .file.you{ border-color:var(--accent); }
 .file.you .fn{ color:var(--accent); }
-.file.you .feed .nosig{ color:var(--accent); }
+.file.you .nosig{ color:var(--accent); }
 
-/* ---------- finale ---------- */
-.finale{
-  border:1px solid var(--line); border-top:0; border-radius:0 0 10px 10px; background:var(--surface);
-  padding:110px 32px 100px; text-align:center;
+/* ---------- end of feed ---------- */
+.end{ padding-block:110px 90px; text-align:center; border-bottom:1px solid var(--line-soft); position:relative; }
+.end .aware{ font-family:var(--mono); font-size:11px; letter-spacing:.24em; color:var(--accent); text-transform:uppercase; }
+.end .lines{ display:flex; flex-direction:column; gap:6px; margin:28px auto 0; font-family:var(--mono); font-size:clamp(18px, 2.4vw, 26px); color:var(--muted); }
+.end .lines span:last-child{ color:var(--text); }
+.end .actions{ display:flex; gap:10px; justify-content:center; margin-top:40px; flex-wrap:wrap; }
+.end .status{ font-family:var(--mono); font-size:11px; color:var(--accent); margin-top:18px; min-height:16px; letter-spacing:.06em; }
+.session{ display:flex; flex-wrap:wrap; justify-content:center; gap:6px 22px; margin-top:34px; font-family:var(--mono); font-size:11px; color:var(--faint); }
+.session b{ color:var(--muted); font-weight:500; }
+
+.film{ padding-block:64px 28px; position:relative; }
+.film-grid{ display:grid; grid-template-columns:2fr 1fr 1fr 1fr; gap:24px; }
+.film .title{ font-weight:800; font-size:clamp(34px, 5vw, 56px); letter-spacing:.1em; text-transform:uppercase; line-height:1; }
+.film .tag{ font-family:var(--serif); font-style:italic; font-size:20px; color:var(--muted); margin:12px 0 0; max-width:34ch; }
+.film b{ display:block; font-family:var(--mono); font-weight:500; font-size:10px; letter-spacing:.18em; color:var(--faint); text-transform:uppercase; margin-bottom:8px; }
+.film span{ display:block; font-size:13px; color:var(--muted); }
+.legal{ margin-top:48px; padding-top:18px; border-top:1px solid var(--line-soft); font-family:var(--mono); font-size:10.5px; color:var(--ghost); display:flex; justify-content:space-between; gap:12px; flex-wrap:wrap; }
+
+.toast{
+  position:fixed; z-index:70; left:max(16px, env(safe-area-inset-left, 0px)); bottom:calc(16px + env(safe-area-inset-bottom, 0px));
+  display:flex; align-items:center; gap:12px; padding:12px 14px; max-width:calc(100vw - 32px);
+  background:var(--surface-2); border:1px solid var(--accent); border-radius:var(--radius);
+  font-size:12.5px; color:var(--muted); box-shadow:0 12px 40px rgba(0,0,0,.5);
+  transform:translateY(140%); opacity:0; transition:transform .5s ease, opacity .5s;
 }
-.finale .q{ font-family:var(--serif); font-style:italic; font-size:clamp(28px,4.4vw,52px); line-height:1.15; margin:0 auto; max-width:18ch; }
-.finale .sub{ font-family:var(--mono); font-size:11px; letter-spacing:.22em; color:var(--faint); text-transform:uppercase; margin-top:20px; }
-.finale .actions{ display:flex; gap:10px; justify-content:center; margin-top:36px; flex-wrap:wrap; }
-.finale .status{ font-family:var(--mono); font-size:11px; color:var(--accent); margin-top:18px; min-height:16px; letter-spacing:.06em; }
-
-.credits{
-  max-width:var(--maxw); margin:0 auto; padding:56px 32px 40px;
-  display:grid; grid-template-columns:2fr 1fr 1fr 1fr; gap:24px; border-bottom:1px solid var(--line-soft);
-}
-.credits .big{ font-weight:800; font-size:28px; letter-spacing:.12em; text-transform:uppercase; }
-.credits p{ color:var(--faint); font-size:12.5px; margin:8px 0 0; max-width:36ch; }
-.credits b{ display:block; font-family:var(--mono); font-weight:500; font-size:10px; letter-spacing:.18em; color:var(--faint); text-transform:uppercase; margin-bottom:8px; }
-.credits span{ display:block; font-size:13px; color:var(--muted); }
-footer{ max-width:var(--maxw); margin:0 auto; padding:22px 32px 40px; font-family:var(--mono); font-size:10.5px; color:var(--ghost); letter-spacing:.04em; display:flex; justify-content:space-between; gap:16px; flex-wrap:wrap; }
-
-
-/* script-driven additions */
-.verified{ display:flex; justify-content:space-between; gap:12px; flex-wrap:wrap; padding:8px 16px; border-bottom:1px solid var(--line-soft);
-  font-family:var(--mono); font-size:10.5px; letter-spacing:.2em; text-transform:uppercase; color:var(--faint); }
-.verified > span:first-child{ color:var(--text); }
-.verified .mono{ letter-spacing:.04em; text-transform:none; }
-.blackout{ position:fixed; inset:0; z-index:150; background:#000; opacity:0; pointer-events:none; transition:opacity .15s; }
-.blackout.on{ opacity:1; transition:none; }
-.figure{ position:absolute; z-index:2; top:-5%; bottom:-5%; width:22%; left:-30%;
-  background:radial-gradient(50% 18% at 50% 16%, rgba(0,0,0,.92), transparent 70%), radial-gradient(48% 55% at 50% 62%, rgba(0,0,0,.85), transparent 75%);
-  filter:blur(8px); opacity:0; pointer-events:none; }
-.figure.pass{ animation:pass 3.8s ease-in-out forwards; }
-@keyframes pass{ 0%{left:-30%; opacity:0} 15%{opacity:.9} 85%{opacity:.9} 100%{left:110%; opacity:0} }
-.redlight{ position:absolute; width:3px; height:3px; border-radius:50%; background:#c4402e; box-shadow:0 0 6px #c4402e; animation:pulse 2.4s infinite; }
+.toast.show{ transform:none; opacity:1; }
+.toast b{ color:var(--text); }
+.toast button{ font-family:var(--mono); font-size:11px; color:var(--sand); text-decoration:underline; text-underline-offset:3px; }
 
 /* ---------- responsive ---------- */
-@media (max-width: 1080px){
-  .scene-body, .scene-body.three{ grid-template-columns:1fr; }
+@media (max-width: 1100px){
+  .split, .tele{ grid-template-columns:1fr; }
   .chat{ height:340px; }
   .side-stack{ display:grid; grid-template-columns:1fr 1fr; }
+  .addr{ display:none; }
 }
 @media (max-width: 760px){
-  .hero, .shell, .credits, footer{ padding-left:16px; padding-right:16px; }
-  .rail{ display:none; }
-  .scene{ padding:40px 16px 44px; }
-  .hero-meta{ grid-template-columns:1fr 1fr; }
+  :root{ --gut:16px; }
+  .sitenav, .acct{ display:none; }
+  .sitebar .wrap{ justify-content:space-between; }
+  .sec{ padding-block:40px; }
   .listings{ grid-template-columns:1fr; }
-  .market-nav .search, .market-nav .acct, .navbtns, .chrome-right{ display:none; }
-  .market-nav{ overflow-x:auto; }
   .camgrid{ grid-template-columns:1fr; }
   .side-stack{ grid-template-columns:1fr; }
   .archive{ grid-template-columns:1fr; }
   .folders{ display:flex; overflow-x:auto; border-right:0; border-bottom:1px solid var(--line-soft); padding:6px; }
   .folders .fh{ display:none; }
   .folders button{ width:auto; white-space:nowrap; gap:8px; border-radius:4px; }
-  .subject{ grid-template-columns:1fr 1fr; }
-  .subject div:nth-child(2){ border-right:0; }
-  .credits{ grid-template-columns:1fr 1fr; }
-  .credits > div:first-child{ grid-column:1/-1; }
-  .thread{ grid-template-columns:32px 1fr; }
+  .kv{ grid-template-columns:1fr 1fr; }
+  .kv div:nth-child(2){ border-right:0; }
+  .film-grid{ grid-template-columns:1fr 1fr; }
+  .film-grid > div:first-child{ grid-column:1/-1; }
+  .thread{ grid-template-columns:30px minmax(0,1fr); }
   .thread .stat{ display:none; }
+  .filters{ overflow-x:auto; }
 }
 @media (prefers-reduced-motion: reduce){
   *{ animation:none !important; transition:none !important; }
@@ -513,372 +429,321 @@ footer{ max-width:var(--maxw); margin:0 auto; padding:22px 32px 40px; font-famil
 <div class="vignette"></div>
 <div class="blackout" id="blackout"></div>
 
-<!-- =================== GATE =================== -->
+<!-- =================== ENTRY: the forum =================== -->
 <div class="gate" id="gate">
-  <div class="gate-card">
-    <div class="mark">Content notice</div>
-    <h1>Purchased</h1>
-    <p>This site is an interactive companion to an original short horror film. It simulates live surveillance, a hidden marketplace and an ongoing chat.</p>
-    <p>Everything you see here is fictional. Nothing you type leaves your browser.</p>
-    <div class="gate-actions">
-      <button class="btn primary" id="enterBtn">Enter with sound</button>
-      <button class="btn" id="enterMuted">Enter muted</button>
+  <div class="forum">
+    <div class="forum-top"><span><b>deadthreads</b> / hidden · archived board</span><span>last activity: <b>just now</b></span></div>
+    <div class="forum-box">
+      <div id="forumList">
+        <div class="thread dead"><div class="ic">404</div><div><div class="ttl">real live cams? (not the paid ones)</div><div class="sub">[deleted] · 3 yrs</div></div><div class="stat">0 replies</div></div>
+        <div class="thread dead"><div class="ic">404</div><div><div class="ttl">mirror list (updated)</div><div class="sub">[deleted] · 2 yrs</div></div><div class="stat">link expired</div></div>
+        <div class="thread alive">
+          <div class="ic">●</div>
+          <div>
+            <div class="ttl">anyone else find this? still up</div>
+            <div class="sub">posted by GhostUser · <span id="postAge">4 min</span> ago</div>
+            <a href="#" class="onion-link" id="onionLink">hmkt_live.onion ↗</a>
+          </div>
+          <div class="stat">1 reply<br><span style="color:var(--accent)">“don't.”</span></div>
+        </div>
+        <div class="thread dead"><div class="ic">404</div><div><div class="ttl">is this the same site from the news?</div><div class="sub">[removed by moderator] · 1 yr</div></div><div class="stat">locked</div></div>
+        <div class="thread dead"><div class="ic">404</div><div><div class="ttl">my friend stopped replying after he clicked it</div><div class="sub">[deleted] · 11 mo</div></div><div class="stat">0 replies</div></div>
+      </div>
+      <div class="connect" id="connect">
+        <div class="steps" id="steps">
+          <div>building circuit <em>ok</em></div>
+          <div>relay 1 · nl-ams <em>ok</em></div>
+          <div>relay 2 · ro-buh <em>ok</em></div>
+          <div>relay 3 · ██-███ <em>ok</em></div>
+          <div>resolving hmkt_live.onion <em>ok</em></div>
+          <div>verifying buyer <em style="color:var(--sand)">guest pass issued</em></div>
+        </div>
+        <div class="landing" id="landing">
+          <div class="logo">hmkt<span>.</span></div>
+          <div class="vb">Verified buyers only</div>
+          <div class="row">
+            <button class="btn primary" id="enterBtn">Enter with sound</button>
+            <button class="btn" id="enterMuted">Enter muted</button>
+          </div>
+        </div>
+      </div>
     </div>
-    <p class="fine" style="margin-top:22px;">Best experienced with headphones, lights off, rain outside.</p>
+    <p class="notice">PURCHASED is an original short horror film. This site is a fictional set piece that simulates a hidden market and live surveillance. Nothing you type leaves your browser. Best with headphones and the lights off.</p>
   </div>
 </div>
 
-<!-- =================== HUD =================== -->
-<div class="hud">
-  <button class="pill" id="soundBtn" aria-label="Toggle sound">SND <span id="soundState">OFF</span></button>
-  <div class="pill"><span class="dot pulse"></span>REC <span id="recClock">00:00:00</span></div>
-</div>
-
-<!-- =================== HERO =================== -->
-<header class="hero" style="position:relative;">
-  <i class="redlight" style="top:22px; left:24px;" title=""></i>
-  <div class="hero-main">
-    <div class="kicker">An original short film</div>
-    <h1><span>Purch</span><span class="flick">a</span><span>sed</span></h1>
-    <p class="tag">Curiosity destroys boundaries. The internet watches longer than we realize.</p>
-    <div class="hero-meta">
-      <div><b>By</b>Kasen Robinson &amp; Gavin Hensley</div>
-      <div><b>Genre</b>Psychological horror</div>
-      <div><b>Format</b>Internet thriller</div>
-      <div><b>Runtime</b>15–18 minutes</div>
+<!-- =================== SITE BAR =================== -->
+<header class="sitebar">
+  <div class="wrap">
+    <div class="brand">hmkt<span>.</span></div>
+    <nav class="sitenav" id="sitenav">
+      <button data-go="live">Live now</button>
+      <button data-go="featured">Featured</button>
+      <button data-go="cole">New listing</button>
+      <button data-go="archive">Archive</button>
+    </nav>
+    <div class="addr" id="addr"><b>hmkt_live.onion</b>/listings</div>
+    <div class="bar-right">
+      <button class="pill" id="soundBtn" aria-label="Toggle sound">SND <span id="soundState">OFF</span></button>
+      <div class="pill"><span class="dot pulse"></span>REC <span id="recClock">00:00:00</span></div>
+      <div class="acct"><i></i><span class="handle">guest_0000</span></div>
     </div>
-  </div>
-  <div class="session" aria-label="Your session">
-    <span class="lbl">Session open</span>
-    <span>handle <b id="sHandle">guest_0000</b></span>
-    <span>local <b id="sTime">--:--</b></span>
-    <span>zone <b id="sZone">—</b></span>
-    <span>display <b id="sScreen">—</b></span>
-    <span class="scroll-cue">scroll to proceed <i></i></span>
   </div>
 </header>
-
-<!-- =================== SITE SHELL =================== -->
-<div class="shell">
-  <div class="browser" id="browser">
-    <div class="chrome">
-      <div class="lights"><i></i><i></i><i></i></div>
-      <div class="navbtns">←&nbsp;→&nbsp;⟳</div>
-      <div class="url" id="url">
-        <svg width="11" height="12" viewBox="0 0 11 12" fill="none"><rect x="1" y="5" width="9" height="6.5" rx="1.2" stroke="currentColor"/><path d="M3 5V3.5a2.5 2.5 0 0 1 5 0V5" stroke="currentColor"/></svg>
-        <span><span class="host" id="urlHost">forum.deadthreads.net</span><span class="path" id="urlPath">/t/hidden</span></span>
-      </div>
-      <div class="chrome-right"><span class="dot ok"></span>3 relays</div>
-    </div>
-    <div class="progress" id="progress"></div>
+<div class="ticker" aria-hidden="true">
+  <div class="run">
+    <span><b>VERIFIED BUYERS ONLY</b></span>
+    <span>LOT A-0417 · bid ₿ 1.284 · <span class="hot">reserved</span></span>
+    <span>LOT A-0421 · 274 watching</span>
+    <span>LOT A-0426 · install scheduled</span>
+    <span>LOT A-0398 · <b>collected</b></span>
+    <span>LOT A-0430 · <span class="hot">pending review</span></span>
+    <span>listings refresh every 60s</span>
+    <span>guest session · <span class="handle">guest_0000</span></span>
   </div>
-
-  <div class="frame">
-    <nav class="rail" id="rail" aria-label="Scenes">
-      <div class="track"></div>
-      <button data-go="s06"><i></i>06</button><div class="track"></div>
-      <button data-go="s07"><i></i>07</button><div class="track"></div>
-      <button data-go="s08"><i></i>08</button><div class="track"></div>
-      <button data-go="s09"><i></i>09</button><div class="track"></div>
-      <button data-go="s12"><i></i>12</button><div class="track"></div>
-      <button data-go="s15"><i></i>15</button><div class="track"></div>
-    </nav>
-
-    <main class="scenes">
-
-      <!-- ========== SCENE 06 — THE LINK ========== -->
-      <section class="scene" id="s06" data-host="forum.deadthreads.net" data-path="/t/hidden">
-        <div class="scene-head">
-          <div><div class="num">Scene 06</div><h2>The Link</h2></div>
-          <p class="desc">Cole scrolls through a hidden forum. Most links are dead. One remains active. He hesitates. He clicks.</p>
-        </div>
-        <div class="scene-body">
-          <div class="panel forum">
-            <div class="forum-bar"><span><b>/hidden</b> · archived board</span><span>last activity: <b id="lastAct">just now</b></span></div>
-            <div id="forumList">
-              <div class="thread dead"><div class="ic">404</div><div><div class="ttl">real live cams? (not the paid ones)</div><div class="sub">[deleted] · 3 yrs</div></div><div class="stat">0 replies</div></div>
-              <div class="thread dead"><div class="ic">404</div><div><div class="ttl">mirror list — updated</div><div class="sub">[deleted] · 2 yrs</div></div><div class="stat">link expired</div></div>
-              <div class="thread alive">
-                <div class="ic">●</div>
-                <div>
-                  <div class="ttl">anyone else find this? still up</div>
-                  <div class="sub">posted by <span style="color:var(--muted)">GhostUser</span> · <span id="postAge">4 min</span> ago</div>
-                  <a href="#" class="onion-link" id="onionLink">hmkt_live.onion ↗</a>
-                </div>
-                <div class="stat">1 reply<br><span style="color:var(--accent)">“don't.”</span></div>
-              </div>
-              <div class="thread dead"><div class="ic">404</div><div><div class="ttl">is this the same site from the news?</div><div class="sub">[removed by moderator] · 1 yr</div></div><div class="stat">locked</div></div>
-              <div class="thread dead"><div class="ic">404</div><div><div class="ttl">my friend stopped replying after he clicked it</div><div class="sub">[deleted] · 11 mo</div></div><div class="stat">0 replies</div></div>
-            </div>
-            <div class="connect" id="connect">
-              <div class="steps" id="steps">
-                <div>building circuit <em>ok</em></div>
-                <div>relay 1 · nl-ams <em>ok</em></div>
-                <div>relay 2 · ro-buh <em>ok</em></div>
-                <div>relay 3 · ██-███ <em>ok</em></div>
-                <div>resolving hmkt_live.onion <em>ok</em></div>
-                <div>verifying buyer… <em style="color:var(--sand)">guest pass issued</em></div>
-              </div>
-              <div class="landing" id="landing">
-                <div class="logo">hmkt<span style="color:var(--accent)">.</span><small>verified buyers only</small></div>
-                <div style="margin-top:22px;"><button class="btn primary" data-go="s07">Enter market</button></div>
-              </div>
-            </div>
-          </div>
-          <div class="panel chat" data-chat="s06">
-            <div class="panel-head"><span class="title">Live chat</span><span class="viewers"><span class="dot pulse"></span><span class="vc" data-n="423">423</span></span></div>
-            <div class="chat-log"></div>
-            <form class="chat-form"><input placeholder="Say something…" maxlength="120"><button aria-label="Send">→</button></form>
-          </div>
-        </div>
-      </section>
-
-      <!-- ========== SCENE 07 — THE AUCTION ========== -->
-      <section class="scene" id="s07" data-host="hmkt_live.onion" data-path="/listings?status=live">
-        <div class="scene-head">
-          <div><div class="num">Scene 07</div><h2>The Auction</h2></div>
-          <p class="desc">A black page loads slowly. Minimal, cold, corporate. Listings. Timers. Viewer counts. Livestream windows.</p>
-        </div>
-        <div class="scene-body">
-          <div class="panel">
-            <div class="market-nav">
-              <div class="brand">hmkt<span>.</span></div>
-              <div class="tabs" id="tabs">
-                <button class="on" data-f="all">All</button>
-                <button data-f="live">Live now</button>
-                <button data-f="soon">Upcoming</button>
-                <button data-f="sold">Sold</button>
-              </div>
-              <div class="search">⌕ <span>Search listings</span></div>
-              <div class="acct"><i></i><span class="handle">guest_0000</span></div>
-            </div>
-            <div class="verified"><span>Verified buyers only</span><span class="mono">session: <span class="handle">guest_0000</span> · guest pass</span></div>
-            <div class="listings" id="listings">
-              <button class="card" data-status="live" data-go="s08">
-                <div class="feed" data-src="victoria"><div class="nosig">connecting</div><span class="chip live badge">Live</span><span class="watch viewers"><span class="vc" data-n="423">423</span> watching</span></div>
-                <div class="card-body">
-                  <div class="card-row"><span class="name">Victoria R. · 18</span><span class="lot">LOT A-0417</span></div>
-                  <div class="loc">Bedroom · cam 2 of 5</div>
-                  <div class="stats"><div><b>Current bid</b><span class="bid">₿ 1.284</span></div><div><b>Ends in</b><span class="timer" data-s="3137">00:52:17</span></div></div>
-                </div>
-              </button>
-              <button class="card" data-status="live">
-                <div class="feed v-flip" data-src="subject3"><div class="nosig">connecting</div><span class="chip live badge">Live</span><span class="watch viewers"><span class="vc" data-n="274">274</span> watching</span></div>
-                <div class="card-body">
-                  <div class="card-row"><span class="name">Casey M. · 27</span><span class="lot">LOT A-0421</span></div>
-                  <div class="loc">Home office · cam 1 of 3</div>
-                  <div class="stats"><div><b>Current bid</b><span class="bid">₿ 0.910</span></div><div><b>Ends in</b><span class="timer" data-s="4385">01:13:05</span></div></div>
-                </div>
-              </button>
-              <button class="card" data-status="soon">
-                <div class="feed v-dim" data-src="subject3-alt"><div class="nosig">stream starts soon</div><span class="chip badge">Upcoming</span></div>
-                <div class="card-body">
-                  <div class="card-row"><span class="name">Emma L. · 21</span><span class="lot">LOT A-0426</span></div>
-                  <div class="loc">Install scheduled · 4 cams</div>
-                  <div class="stats"><div><b>Starting</b><span class="bid">₿ 0.400</span></div><div><b>Goes live</b><span class="timer" data-s="2262">00:37:42</span></div></div>
-                </div>
-              </button>
-              <button class="card sold" data-status="sold">
-                <div class="feed v-tight" data-src="victoria-alt"><div class="nosig">feed ended</div><span class="chip badge">Sold</span></div>
-                <div class="card-body">
-                  <div class="card-row"><span class="name">Lily T. · 19</span><span class="lot">LOT A-0398</span></div>
-                  <div class="loc">Collected</div>
-                  <div class="stats"><div><b>Final</b><span class="bid">₿ 2.050</span></div><div><b>Status</b><span>Closed</span></div></div>
-                </div>
-              </button>
-              <button class="card new" id="newCard" data-status="soon" data-go="s09">
-                <div class="feed v-ir" data-src="cole"><div class="nosig">connecting</div><span class="chip live badge">New</span><span class="watch viewers"><span class="vc" data-n="731">731</span> watching</span></div>
-                <div class="card-body">
-                  <div class="card-row"><span class="name">Cole L. · 19</span><span class="lot">LOT A-0430</span></div>
-                  <div class="loc">Guest bedroom · cam 4 of 4</div>
-                  <div class="stats"><div><b>Reserve</b><span class="bid">met</span></div><div><b>Status</b><span style="color:var(--accent)">Watching you</span></div></div>
-                </div>
-              </button>
-            </div>
-            <div class="toast" id="toast"><span class="dot pulse"></span><span>New listing added just now — <b style="color:var(--text)">Cole L.</b></span></div>
-          </div>
-          <div class="panel chat" data-chat="s07">
-            <div class="panel-head"><span class="title">Market chat</span><span class="viewers"><span class="dot pulse"></span><span class="vc" data-n="588">588</span></span></div>
-            <div class="chat-log"></div>
-            <form class="chat-form"><input placeholder="Say something…" maxlength="120"><button aria-label="Send">→</button></form>
-          </div>
-        </div>
-      </section>
-
-      <!-- ========== SCENE 08 — VICTORIA ========== -->
-      <section class="scene" id="s08" data-host="hmkt_live.onion" data-path="/watch/a-0417-victoria-r">
-        <div class="scene-head">
-          <div><div class="num">Scene 08</div><h2>Victoria</h2></div>
-          <p class="desc">Victoria Reeves, 18, sits alone eating popcorn while watching a movie. Completely unaware.</p>
-        </div>
-        <div class="scene-body">
-          <div class="panel player">
-            <div class="panel-head">
-              <span class="title"><span class="chip live">Live</span> Victoria Reeves · Lot A-0417</span>
-              <span class="viewers"><span class="vc" data-n="423">423</span> watching</span>
-            </div>
-            <div class="feed" data-src="victoria" id="vicFeed">
-              <div class="nosig">awaiting signal · media/victoria.mp4</div>
-              <div class="osd"><span class="tl">CAM 02 · Bedroom</span><span class="tr"><span class="dot pulse"></span>REC</span><span class="bl osd-time">--</span><span class="br">1080P · 24FPS</span></div>
-            </div>
-            <div class="player-bar">
-              <button class="unmute">🔈 <span>Muted</span></button>
-              <div class="scrub"></div>
-              <span>LIVE</span>
-              <button data-cam>CAM 2/5 ⇄</button>
-            </div>
-            <div class="subject">
-              <div><b>Subject</b><span>Victoria Reeves</span></div>
-              <div><b>Current bid</b><span class="gold">₿ 1.284</span></div>
-              <div><b>Status</b><span class="warn">Reserved</span></div>
-              <div><b>Pickup</b><span class="timer" data-s="3137">00:52:17</span></div>
-            </div>
-          </div>
-          <div class="panel chat" data-chat="s08">
-            <div class="panel-head"><span class="title">Live chat</span><span class="viewers"><span class="dot pulse"></span><span class="vc" data-n="423">423</span></span></div>
-            <div class="chat-log"></div>
-            <form class="chat-form"><input placeholder="Say something…" maxlength="120"><button aria-label="Send">→</button></form>
-          </div>
-        </div>
-      </section>
-
-      <!-- ========== SCENE 09 — COLE LEWIS ========== -->
-      <section class="scene" id="s09" data-host="hmkt_live.onion" data-path="/watch/a-0430-cole-lewis">
-        <div class="scene-head">
-          <div><div class="num">Scene 09</div><h2>Cole Lewis</h2></div>
-          <p class="desc">Then his real name appears. He clicks. Four camera feeds. Live. He turns around. Nothing. On the stream, something moves behind him.</p>
-        </div>
-        <div class="scene-body">
-          <div class="panel">
-            <div class="reveal-banner">
-              <div class="av"><div class="feed v-tight" data-src="cole"><div class="nosig"></div></div></div>
-              <div><div class="nm">Cole Lewis</div><div class="meta">LOT A-0430 · 4 cams · listed <span id="listedAgo">just now</span></div></div>
-              <div class="right"><span class="chip live">Live</span><span class="viewers"><span class="vc" data-n="731">731</span></span></div>
-            </div>
-            <div class="camgrid" id="camgrid">
-              <div class="feed v-dim" data-src="cole-exterior"><div class="nosig">no motion</div><div class="osd"><span class="tl">CAM 01 · Outside the cabin</span><span class="tr"><span class="dot pulse"></span></span><span class="bl osd-time">--</span></div></div>
-              <div class="feed v-tight" data-src="cole-kitchen"><div class="nosig">no motion</div><div class="osd"><span class="tl">CAM 02 · Kitchen</span><span class="tr"><span class="dot pulse"></span></span><span class="bl osd-time">--</span></div></div>
-              <div class="feed v-ir" data-src="cole-bathroom"><div class="nosig">no motion</div><div class="osd"><span class="tl">CAM 03 · Bathroom</span><span class="tr"><span class="dot pulse"></span></span><span class="bl osd-time">--</span></div></div>
-              <div class="feed hot" data-src="cole" id="bedCam"><div class="nosig">awaiting signal · media/cole.mp4</div><div class="figure"></div><div class="osd"><span class="tl">CAM 04 · Guest bedroom ● motion</span><span class="tr"><span class="dot pulse"></span>REC</span><span class="bl osd-time">--</span><span class="br">tap to expand</span></div></div>
-            </div>
-          </div>
-          <div class="panel chat" data-chat="s09">
-            <div class="panel-head"><span class="title">Live chat</span><span class="viewers"><span class="dot pulse"></span><span class="vc" data-n="731">731</span></span></div>
-            <div class="chat-log"></div>
-            <form class="chat-form"><input placeholder="Say something…" maxlength="120"><button aria-label="Send">→</button></form>
-          </div>
-        </div>
-      </section>
-
-      <!-- ========== SCENE 12 — THE CHAT RETURNS ========== -->
-      <section class="scene" id="s12" data-host="hmkt_live.onion" data-path="/watch/a-0430-cole-lewis?persist=1">
-        <div class="scene-head">
-          <div><div class="num">Scene 12</div><h2>The Chat Returns</h2></div>
-          <p class="desc">Cole opens the laptop. The site reconnects. He closes the tabs — they reopen. He disconnects the Wi-Fi. Still connected.</p>
-        </div>
-        <div class="scene-body three">
-          <div class="panel player">
-            <div class="panel-head">
-              <span class="title"><span class="chip live">Live</span> Cole Lewis · Cam 04</span>
-              <span class="viewers"><span class="vc vc-climb" data-n="12">12</span> watching</span>
-            </div>
-            <div class="feed v-flip" data-src="cole" id="coleFeed">
-              <div class="nosig">awaiting signal · media/cole.mp4</div>
-              <div class="osd"><span class="tl">CAM 04 · Guest bedroom</span><span class="tr"><span class="dot pulse"></span>REC</span><span class="bl osd-time">--</span><span class="br">source: unknown</span></div>
-              <div class="closed-msg" id="closedMsg"><span>TAB CLOSED</span><b id="closedSub">reopening…</b></div>
-            </div>
-            <div class="player-bar">
-              <button class="unmute">🔈 <span>Muted</span></button>
-              <div class="scrub"></div>
-              <span>LIVE</span>
-              <button id="closeStream">✕ Close tab</button>
-            </div>
-          </div>
-          <div class="side-stack">
-            <div class="panel">
-              <div class="panel-head"><span class="title">System</span><span class="mono" style="font-size:10px;">COLE-MBP</span></div>
-              <div class="sys-list">
-                <div class="sys-row"><span>Wi-Fi</span><button class="switch on" id="wifiSwitch" aria-label="Toggle Wi-Fi"></button></div>
-                <div class="sys-row"><span>Connection</span><span class="val ok" id="connVal"><span class="dot ok"></span>Connected</span></div>
-                <div class="sys-row"><span>Webcam</span><span class="val bad"><span class="dot pulse"></span>In use</span></div>
-                <div class="sys-row"><span>IP trace</span><span class="val bad">Enabled</span></div>
-                <div class="sys-row"><span>Stream</span><span class="val bad">Persistent</span></div>
-              </div>
-            </div>
-            <div class="panel chat" data-chat="s12" style="height:330px;">
-              <div class="panel-head"><span class="title">Chat</span><span class="viewers"><span class="dot pulse"></span><span class="vc vc-climb" data-n="12">12</span></span></div>
-              <div class="chat-log"></div>
-              <form class="chat-form"><input placeholder="Say something…" maxlength="120"><button aria-label="Send">→</button></form>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- ========== SCENE 15 — THE ARCHIVE ========== -->
-      <section class="scene" id="s15" data-host="hmkt_live.onion" data-path="/archive/cole-lewis">
-        <div class="scene-head">
-          <div><div class="num">Scene 15</div><h2>The Archive</h2></div>
-          <p class="desc">Cole runs upstairs. The site updates. Thousands of files appear. Dates go back over a decade.</p>
-        </div>
-        <div class="scene-body">
-          <div class="panel archive">
-            <div class="folders" id="folders">
-              <div class="fh">Archive</div>
-            </div>
-            <div>
-              <div class="files-head"><span class="crumb" id="crumb">ARCHIVE: COLE LEWIS</span><span><span id="fileCount">3,412</span> files</span></div>
-              <div class="files" id="files"></div>
-            </div>
-          </div>
-          <div class="panel chat" data-chat="s15">
-            <div class="panel-head"><span class="title">Live chat</span><span class="viewers"><span class="dot pulse"></span><span class="vc" data-n="2341">2,341</span></span></div>
-            <div class="chat-log"></div>
-            <form class="chat-form"><input placeholder="Say something…" maxlength="120"><button aria-label="Send">→</button></form>
-          </div>
-        </div>
-      </section>
-    </main>
-  </div>
-
-  <!-- =================== FINALE =================== -->
-  <section class="finale" id="finale">
-    <div class="sub" style="color:var(--accent); margin:0 0 22px;">Subject awareness: complete</div>
-    <p class="q">Curiosity opened a door that may have already been open for years.</p>
-    <div class="sub">Session length <span id="finalClock">00:00:00</span> · handle <span class="handle">guest_0000</span></div>
-    <div class="actions">
-      <button class="btn danger" id="stayBtn">Stay online</button>
-      <button class="btn" id="leaveBtn">Log off</button>
-    </div>
-    <div class="status" id="finalStatus"></div>
-  </section>
 </div>
 
-<section class="credits" style="position:relative;">
-  <i class="redlight" style="top:20px; right:34px;"></i>
-  <div>
-    <div class="big">Purchased</div>
-    <p>Curiosity destroys boundaries. Evil exists quietly. Privacy is an illusion. The internet watches longer than we realize.</p>
+<main>
+  <!-- ========== LIVE NOW (scene 7) ========== -->
+  <section class="sec" id="live" data-addr="/listings?status=live">
+    <div class="wrap">
+      <div class="sec-head">
+        <h2>Live now <span class="chip"><span id="liveCount">4</span> listings</span></h2>
+        <div class="filters" id="tabs">
+          <button class="on" data-f="all">All</button>
+          <button data-f="live">Live</button>
+          <button data-f="soon">Upcoming</button>
+          <button data-f="sold">Sold</button>
+        </div>
+      </div>
+      <div class="split">
+        <div class="listings" id="listings">
+          <button class="card" data-status="live" data-go="featured">
+            <div class="feed" data-src="victoria"><div class="nosig">connecting</div><span class="chip live badge">Live</span><span class="watch viewers"><span class="vc" data-n="423">423</span> watching</span></div>
+            <div class="card-body">
+              <div class="card-row"><span class="name">Victoria R. · 18</span><span class="lot">LOT A-0417</span></div>
+              <div class="loc">Bedroom · cam 2 of 5</div>
+              <div class="stats"><div><b>Current bid</b><span class="bid">₿ 1.284</span></div><div><b>Ends in</b><span class="timer" data-s="3137">00:52:17</span></div></div>
+            </div>
+          </button>
+          <button class="card" data-status="live">
+            <div class="feed v-flip" data-src="subject3"><div class="nosig">connecting</div><span class="chip live badge">Live</span><span class="watch viewers"><span class="vc" data-n="274">274</span> watching</span></div>
+            <div class="card-body">
+              <div class="card-row"><span class="name">Casey M. · 27</span><span class="lot">LOT A-0421</span></div>
+              <div class="loc">Home office · cam 1 of 3</div>
+              <div class="stats"><div><b>Current bid</b><span class="bid">₿ 0.910</span></div><div><b>Ends in</b><span class="timer" data-s="4385">01:13:05</span></div></div>
+            </div>
+          </button>
+          <button class="card" data-status="soon">
+            <div class="feed v-dim" data-src="subject3-alt"><div class="nosig">stream starts soon</div><span class="chip badge">Upcoming</span></div>
+            <div class="card-body">
+              <div class="card-row"><span class="name">Emma L. · 21</span><span class="lot">LOT A-0426</span></div>
+              <div class="loc">Install scheduled · 4 cams</div>
+              <div class="stats"><div><b>Starting</b><span class="bid">₿ 0.400</span></div><div><b>Goes live</b><span class="timer" data-s="2262">00:37:42</span></div></div>
+            </div>
+          </button>
+          <button class="card sold" data-status="sold">
+            <div class="feed v-tight" data-src="victoria-alt"><div class="nosig">feed ended</div><span class="chip badge">Sold</span></div>
+            <div class="card-body">
+              <div class="card-row"><span class="name">Lily T. · 19</span><span class="lot">LOT A-0398</span></div>
+              <div class="loc">Collected</div>
+              <div class="stats"><div><b>Final</b><span class="bid">₿ 2.050</span></div><div><b>Status</b><span>Closed</span></div></div>
+            </div>
+          </button>
+          <button class="card new" id="newCard" data-status="live" data-go="cole">
+            <div class="feed v-ir" data-src="cole"><div class="nosig">connecting</div><span class="chip live badge">New</span><span class="watch viewers"><span class="vc" data-n="731">731</span> watching</span></div>
+            <div class="card-body">
+              <div class="card-row"><span class="name">Cole L. · 19</span><span class="lot">LOT A-0430</span></div>
+              <div class="loc">Guest bedroom · cam 4 of 4</div>
+              <div class="stats"><div><b>Reserve</b><span class="bid">Met</span></div><div><b>Status</b><span class="warn">Live</span></div></div>
+            </div>
+          </button>
+        </div>
+        <div class="panel chat" data-chat="s07">
+          <div class="panel-head"><span class="title">Market chat</span><span class="viewers"><span class="dot pulse"></span><span class="vc" data-n="588">588</span></span></div>
+          <div class="chat-log"></div>
+          <form class="chat-form"><input id="chat-s07" placeholder="Say something…" maxlength="120" autocomplete="off"><button aria-label="Send">→</button></form>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== FEATURED: VICTORIA (scene 8) ========== -->
+  <section class="sec" id="featured" data-addr="/watch/a-0417">
+    <div class="wrap">
+      <div class="sec-head">
+        <h2><span class="chip live">Live</span> Victoria Reeves</h2>
+        <div class="meta">LOT A-0417 · featured stream · <span class="viewers"><span class="vc" data-n="423">423</span> watching</span></div>
+      </div>
+      <div class="split">
+        <div class="panel player">
+          <div class="feed" data-src="victoria" id="vicFeed">
+            <div class="nosig">awaiting signal</div>
+            <div class="osd"><span class="tl">CAM 02 · Bedroom</span><span class="tr"><span class="dot pulse"></span>REC</span><span class="bl osd-time">--</span><span class="br">1080P · 24FPS</span></div>
+          </div>
+          <div class="player-bar">
+            <button class="unmute">🔈 <span>Muted</span></button>
+            <div class="scrub"></div>
+            <span>LIVE</span>
+            <button data-cam>CAM 2/5 ⇄</button>
+          </div>
+          <div class="kv">
+            <div><b>Subject</b><span>Victoria Reeves, 18</span></div>
+            <div><b>Current bid</b><span class="bid">₿ 1.284</span></div>
+            <div><b>Status</b><span class="warn">Reserved</span></div>
+            <div><b>Pickup</b><span class="timer" data-s="3137">00:52:17</span></div>
+          </div>
+        </div>
+        <div class="panel chat" data-chat="s08">
+          <div class="panel-head"><span class="title">Live chat</span><span class="viewers"><span class="dot pulse"></span><span class="vc" data-n="423">423</span></span></div>
+          <div class="chat-log"></div>
+          <form class="chat-form"><input id="chat-s08" placeholder="Say something…" maxlength="120" autocomplete="off"><button aria-label="Send">→</button></form>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== NEW LISTING: COLE LEWIS (scene 9) ========== -->
+  <section class="sec reveal" id="cole" data-addr="/watch/a-0430">
+    <div class="wrap">
+      <div class="kicker"><span class="chip live">Live</span><span>New listing · LOT A-0430</span><span>listed <span id="listedAgo">just now</span></span></div>
+      <h2>Cole Lewis</h2>
+      <div class="sub"><span><b>age</b> 19</span><span><b>location</b> cabin · upstairs guest bedroom</span><span><b>cams</b> 4 of 4 online</span><span class="viewers"><span class="dot pulse"></span><span class="vc" data-n="731">731</span> watching</span></div>
+      <div class="split">
+        <div class="panel">
+          <div class="camgrid" id="camgrid">
+            <div class="feed v-dim" data-src="cole-exterior"><div class="nosig">no motion</div><div class="osd"><span class="tl">CAM 01 · Outside the cabin</span><span class="tr"><span class="dot pulse"></span></span><span class="bl osd-time">--</span></div></div>
+            <div class="feed v-tight" data-src="cole-kitchen"><div class="nosig">no motion</div><div class="osd"><span class="tl">CAM 02 · Kitchen</span><span class="tr"><span class="dot pulse"></span></span><span class="bl osd-time">--</span></div></div>
+            <div class="feed v-ir" data-src="cole-bathroom"><div class="nosig">no motion</div><div class="osd"><span class="tl">CAM 03 · Bathroom</span><span class="tr"><span class="dot pulse"></span></span><span class="bl osd-time">--</span></div></div>
+            <div class="feed hot" data-src="cole" id="bedCam"><div class="nosig">awaiting signal</div><div class="figure"></div><div class="osd"><span class="tl">CAM 04 · Guest bedroom ● motion</span><span class="tr"><span class="dot pulse"></span>REC</span><span class="bl osd-time">--</span><span class="br">tap to expand</span></div></div>
+          </div>
+        </div>
+        <div class="panel chat" data-chat="s09">
+          <div class="panel-head"><span class="title">Live chat</span><span class="viewers"><span class="dot pulse"></span><span class="vc" data-n="731">731</span></span></div>
+          <div class="chat-log"></div>
+          <form class="chat-form"><input id="chat-s09" placeholder="Say something…" maxlength="120" autocomplete="off"><button aria-label="Send">→</button></form>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== SUBJECT TELEMETRY (scene 12) ========== -->
+  <section class="sec" id="telemetry" data-addr="/watch/a-0430?persist=1">
+    <div class="wrap">
+      <div class="sec-head">
+        <h2>Subject telemetry</h2>
+        <div class="meta">LOT A-0430 · device COLE-MBP · stream persistent</div>
+      </div>
+      <div class="tele">
+        <div class="panel player">
+          <div class="panel-head">
+            <span class="title"><span class="chip live">Live</span> Cole Lewis · Cam 04</span>
+            <span class="viewers"><span class="vc vc-climb" data-n="12">12</span> watching</span>
+          </div>
+          <div class="feed v-flip" data-src="cole" id="coleFeed">
+            <div class="nosig">reconnecting</div>
+            <div class="osd"><span class="tl">CAM 04 · Guest bedroom</span><span class="tr"><span class="dot pulse"></span>REC</span><span class="bl osd-time">--</span><span class="br">route: fallback</span></div>
+            <div class="closed-msg" id="closedMsg"><span>TAB CLOSED</span><b id="closedSub">reopening…</b></div>
+          </div>
+          <div class="player-bar">
+            <button class="unmute">🔈 <span>Muted</span></button>
+            <div class="scrub"></div>
+            <span>LIVE</span>
+            <button id="closeStream">✕ Close tab</button>
+          </div>
+        </div>
+        <div class="side-stack">
+          <div class="panel">
+            <div class="panel-head"><span class="title">Device · COLE-MBP</span><span class="mono" style="font-size:10px;">remote</span></div>
+            <div>
+              <div class="sys-row"><span>Wi-Fi</span><button class="switch on" id="wifiSwitch" aria-label="Toggle Wi-Fi"></button></div>
+              <div class="sys-row"><span>Connection</span><span class="val ok" id="connVal"><span class="dot ok"></span>Connected</span></div>
+              <div class="sys-row"><span>Webcam</span><span class="val bad"><span class="dot pulse"></span>In use</span></div>
+              <div class="sys-row"><span>Open tabs</span><span class="val ok">3 · auto-restore</span></div>
+              <div class="sys-row"><span>Stream</span><span class="val bad">Persistent</span></div>
+            </div>
+          </div>
+          <div class="panel chat" data-chat="s12" style="height:330px;">
+            <div class="panel-head"><span class="title">Chat</span><span class="viewers"><span class="dot pulse"></span><span class="vc vc-climb" data-n="12">12</span></span></div>
+            <div class="chat-log"></div>
+            <form class="chat-form"><input id="chat-s12" placeholder="Say something…" maxlength="120" autocomplete="off"><button aria-label="Send">→</button></form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== ARCHIVE (scene 15) ========== -->
+  <section class="sec" id="archive" data-addr="/archive/cole-lewis">
+    <div class="wrap">
+      <div class="sec-head">
+        <h2 class="arch-title">ARCHIVE: COLE LEWIS</h2>
+        <div class="meta"><span id="fileCount">3,412</span> files · oldest 2014</div>
+      </div>
+      <div class="split">
+        <div class="panel archive">
+          <div class="folders" id="folders"><div class="fh">Folders</div></div>
+          <div style="min-width:0;">
+            <div class="files-head"><span class="crumb" id="crumb">cole-lewis / all</span><span>sorted by date</span></div>
+            <div class="files" id="files"></div>
+          </div>
+        </div>
+        <div class="panel chat" data-chat="s15">
+          <div class="panel-head"><span class="title">Live chat</span><span class="viewers"><span class="dot pulse"></span><span class="vc" data-n="2341">2,341</span></span></div>
+          <div class="chat-log"></div>
+          <form class="chat-form"><input id="chat-s15" placeholder="Say something…" maxlength="120" autocomplete="off"><button aria-label="Send">→</button></form>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== END OF FEED ========== -->
+  <section class="end" id="end" data-addr="/session">
+    <i class="redlight" style="top:28px; right:12%;"></i>
+    <div class="wrap">
+      <div class="aware">Subject awareness: complete</div>
+      <div class="lines" id="endLines"><span>Eye contact.</span><span>Perfect.</span><span>Buyer arrived.</span></div>
+      <div class="actions">
+        <button class="btn danger" id="stayBtn">Stay online</button>
+        <button class="btn" id="leaveBtn">Log off</button>
+      </div>
+      <div class="status" id="finalStatus"></div>
+      <div class="session">
+        <span>handle <b class="handle">guest_0000</b></span>
+        <span>session <b id="finalClock">00:00:00</b></span>
+        <span>local <b id="sTime">--:--</b></span>
+        <span>zone <b id="sZone">—</b></span>
+        <span>display <b id="sScreen">—</b></span>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="film">
+  <i class="redlight" style="top:22px; left:22px;"></i>
+  <div class="wrap">
+    <div class="film-grid">
+      <div>
+        <div class="title">Purchased</div>
+        <p class="tag">Curiosity opened a door that may have already been open for years.</p>
+      </div>
+      <div><b>By</b><span>Kasen Robinson</span><span>Gavin Hensley</span></div>
+      <div><b>Genre</b><span>Psychological horror</span><span>Internet thriller</span></div>
+      <div><b>Runtime</b><span>15–18 minutes</span></div>
+    </div>
+    <div class="legal">
+      <span>© PURCHASED. An original short film.</span>
+      <span>hmkt_live.onion is fictional. No data is collected by this site.</span>
+    </div>
   </div>
-  <div><b>Directed by</b><span>Kasen Robinson</span><span>Gavin Hensley</span></div>
-  <div><b>Genre</b><span>Psychological horror</span><span>Internet thriller</span></div>
-  <div><b>Runtime</b><span>15–18 minutes</span></div>
-</section>
-<footer>
-  <span>© PURCHASED. All rights reserved.</span>
-  <span>hmkt_live.onion is a fictional set piece created for the film. No data is collected by this site.</span>
 </footer>
+
+<div class="toast" id="toast" role="status"><span class="dot pulse"></span><span>New listing · <b>COLE LEWIS</b></span><button data-go="cole">view</button></div>
 
 <script>
 /* =========================================================
-   MEDIA CONFIG — drop your clips in /media and edit paths here.
-   Three live-recording clips are expected:
-     victoria  → Victoria (scene 07 card, scene 08 player)
-     cole      → Cole     (scene 07 new card, 09 bedroom cam, 12 player, 15 archive thumbs)
-     subject3  → third person (scene 07 "Casey M." card)
-   Anything set to null (or missing on disk) falls back to a styled "no signal" panel.
-   The *-alt / cole-* keys reuse a main clip with a different crop/filter
-   so one clip can read as several camera angles. Point them at their own
-   files if you shoot extra angles.
+   MEDIA: put the three clips in /media (see media/README.md).
+   Missing files fall back to a styled "no signal" panel.
    ========================================================= */
 const MEDIA = {
   victoria:        'media/victoria.mp4',
@@ -891,7 +756,6 @@ const MEDIA = {
   'cole-bathroom': 'media/cole.mp4#t=15',
 };
 
-/* ---------- utilities ---------- */
 const $  = (s, r=document) => r.querySelector(s);
 const $$ = (s, r=document) => [...r.querySelectorAll(s)];
 const pad = n => String(n).padStart(2,'0');
@@ -900,37 +764,33 @@ const rand = (a,b) => Math.floor(Math.random()*(b-a+1))+a;
 const pick = a => a[Math.floor(Math.random()*a.length)];
 const safe = s => s.replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 
-/* ---------- session identity (local only, never sent anywhere) ---------- */
+/* ---------- session identity (stays in this browser) ---------- */
 let HANDLE = 'guest_' + rand(1000,9999);
 try{
   const saved = localStorage.getItem('purchased_handle');
   if(saved) HANDLE = saved; else localStorage.setItem('purchased_handle', HANDLE);
 }catch(e){}
 $$('.handle').forEach(el => el.textContent = HANDLE);
-$('#sHandle').textContent = HANDLE;
 try{ $('#sZone').textContent = Intl.DateTimeFormat().resolvedOptions().timeZone.replace('_',' '); }catch(e){}
 $('#sScreen').textContent = `${screen.width}×${screen.height}`;
 
-/* ---------- gate + ambient sound ---------- */
+/* ---------- ambient sound: rain, HVAC, electrical hum ---------- */
 let audio = null, soundOn = false;
 function buildAudio(){
   const Ctx = window.AudioContext || window.webkitAudioContext;
   if(!Ctx) return null;
   const ctx = new Ctx();
   const master = ctx.createGain(); master.gain.value = 0; master.connect(ctx.destination);
-  // brown noise = HVAC / room tone
   const len = ctx.sampleRate * 3, buf = ctx.createBuffer(1, len, ctx.sampleRate), d = buf.getChannelData(0);
   let last = 0; for(let i=0;i<len;i++){ const w = Math.random()*2-1; last = (last + .02*w)/1.02; d[i] = last*3.2; }
   const noise = ctx.createBufferSource(); noise.buffer = buf; noise.loop = true;
   const lp = ctx.createBiquadFilter(); lp.type='lowpass'; lp.frequency.value = 420;
   const ng = ctx.createGain(); ng.gain.value = .55;
   noise.connect(lp).connect(ng).connect(master); noise.start();
-  // electrical hum
   const hum = ctx.createOscillator(); hum.frequency.value = 60; const hg = ctx.createGain(); hg.gain.value = .035;
   hum.connect(hg).connect(master); hum.start();
   const hum2 = ctx.createOscillator(); hum2.frequency.value = 120; const hg2 = ctx.createGain(); hg2.gain.value = .012;
   hum2.connect(hg2).connect(master); hum2.start();
-  // rain on the windows
   const rbuf = ctx.createBuffer(1, ctx.sampleRate*2, ctx.sampleRate), rd = rbuf.getChannelData(0);
   for(let i=0;i<rd.length;i++) rd[i] = (Math.random()*2-1) * (Math.random() < .002 ? 3 : .6);
   const rain = ctx.createBufferSource(); rain.buffer = rbuf; rain.loop = true;
@@ -950,56 +810,54 @@ function buildAudio(){
 function setSound(on){
   soundOn = on;
   if(on && !audio) audio = buildAudio();
-  if(audio){
-    audio.ctx.resume();
-    audio.master.gain.setTargetAtTime(on ? .32 : 0, audio.ctx.currentTime, .6);
-  }
+  if(audio){ audio.ctx.resume(); audio.master.gain.setTargetAtTime(on ? .32 : 0, audio.ctx.currentTime, .6); }
   $('#soundState').textContent = on ? 'ON' : 'OFF';
 }
+const blip = (...a) => { if(soundOn && audio) audio.blip(...a); };
+$('#soundBtn').onclick = () => setSound(!soundOn);
+
+/* ---------- entry: forum → relays → market ---------- */
+$('#onionLink').addEventListener('click', e => {
+  e.preventDefault();
+  $('#forumList').style.display = 'none';
+  $('#connect').classList.add('on');
+  const steps = $$('#steps div');
+  steps.forEach((d, i) => setTimeout(() => d.classList.add('show'), 420*(i+1)));
+  setTimeout(() => $('#landing').classList.add('show'), 420*(steps.length+1));
+});
 function enter(withSound){
-  $('#gate').classList.add('gone');
-  document.body.classList.remove('locked');
   setSound(withSound);
-  startClock();
+  const bo = $('#blackout'); bo.classList.add('on');
+  setTimeout(() => {
+    $('#gate').classList.add('gone');
+    document.body.classList.remove('locked');
+    window.scrollTo(0,0);
+    requestAnimationFrame(() => bo.classList.remove('on'));
+    startClock();
+  }, 900);
 }
 $('#enterBtn').onclick = () => enter(true);
 $('#enterMuted').onclick = () => enter(false);
-$('#soundBtn').onclick = () => setSound(!soundOn);
+let postMin = 4;
+setInterval(() => { postMin++; $('#postAge').textContent = postMin + ' min'; }, 60000);
 
-/* ---------- clocks ---------- */
+/* ---------- clocks + counters ---------- */
 let secs = 0, clockStarted = false;
 function startClock(){
   if(clockStarted) return; clockStarted = true;
-  setInterval(() => {
-    secs++;
-    $('#recClock').textContent = fmt(secs);
-    $('#finalClock').textContent = fmt(secs);
-  }, 1000);
+  setInterval(() => { secs++; $('#recClock').textContent = fmt(secs); $('#finalClock').textContent = fmt(secs); }, 1000);
 }
 function tickTime(){
-  const now = new Date();
-  const ts = `${now.getFullYear()}-${pad(now.getMonth()+1)}-${pad(now.getDate())}  ${pad(now.getHours())}:${pad(now.getMinutes())}:${pad(now.getSeconds())}`;
+  const n = new Date();
+  const ts = `${n.getFullYear()}-${pad(n.getMonth()+1)}-${pad(n.getDate())}  ${pad(n.getHours())}:${pad(n.getMinutes())}:${pad(n.getSeconds())}`;
   $$('.osd-time').forEach(el => el.textContent = ts);
-  $('#sTime').textContent = `${pad(now.getHours())}:${pad(now.getMinutes())}`;
+  $('#sTime').textContent = `${pad(n.getHours())}:${pad(n.getMinutes())}`;
 }
 tickTime(); setInterval(tickTime, 1000);
-
-/* countdown timers */
-setInterval(() => {
-  $$('.timer').forEach(el => {
-    let s = +el.dataset.s; if(s > 0) s--; el.dataset.s = s; el.textContent = fmt(s);
-  });
-}, 1000);
-
-/* viewer counts */
-$$('.vc:not(.vc-climb)').forEach(el => {
-  setInterval(() => {
-    const n = Math.max(1, +el.dataset.n + rand(-2, 6));
-    el.dataset.n = n; el.textContent = n.toLocaleString();
-  }, rand(1600, 3200));
-});
-
-/* scene 12: counts climb 12 → 26 → 41 → … once the scene is reached */
+setInterval(() => $$('.timer').forEach(el => { let s = +el.dataset.s; if(s > 0) s--; el.dataset.s = s; el.textContent = fmt(s); }), 1000);
+$$('.vc:not(.vc-climb)').forEach(el => setInterval(() => {
+  const n = Math.max(1, +el.dataset.n + rand(-2, 6)); el.dataset.n = n; el.textContent = n.toLocaleString();
+}, rand(1600, 3200)));
 let climbStarted = false;
 function startClimb(){
   if(climbStarted) return; climbStarted = true;
@@ -1014,53 +872,36 @@ function startClimb(){
 }
 
 /* ---------- video feeds ---------- */
-function mountFeed(feed){
-  const key = feed.dataset.src, src = MEDIA[key];
-  if(!src) return;
+function attachVideo(feed, src){
   const v = document.createElement('video');
   v.muted = true; v.loop = true; v.playsInline = true; v.preload = 'metadata';
   v.setAttribute('playsinline',''); v.setAttribute('muted','');
   v.src = src;
   v.addEventListener('loadeddata', () => feed.classList.add('ready'));
   v.addEventListener('error', () => feed.classList.remove('ready'));
-  feed.prepend(v);
-  feed._video = v;
+  feed.prepend(v); feed._video = v;
 }
-$$('.feed[data-src]').forEach(mountFeed);
-
-// archive thumbnails stay paused (still frames); everything else plays only while on screen
-const vio = new IntersectionObserver(entries => {
-  entries.forEach(e => {
-    const v = e.target._video; if(!v || e.target.dataset.still) return;
-    if(e.isIntersecting){ v.play().catch(()=>{}); } else { v.pause(); }
-  });
-}, { rootMargin:'120px' });
+$$('.feed[data-src]').forEach(f => { const src = MEDIA[f.dataset.src]; if(src) attachVideo(f, src); });
+const vio = new IntersectionObserver(es => es.forEach(e => {
+  const v = e.target._video; if(!v || e.target.dataset.still) return;
+  e.isIntersecting ? v.play().catch(()=>{}) : v.pause();
+}), { rootMargin:'120px' });
 $$('.feed[data-src]').forEach(f => vio.observe(f));
-
-/* unmute buttons — only one feed has sound at a time */
-$$('.unmute').forEach(btn => {
-  btn.onclick = () => {
-    const v = btn.closest('.player').querySelector('.feed')._video; if(!v) return;
-    const willUnmute = v.muted;
-    $$('video').forEach(o => o.muted = true);
-    $$('.unmute span').forEach(s => s.textContent = 'Muted');
-    v.muted = !willUnmute;
-    btn.querySelector('span').textContent = willUnmute ? 'Sound on' : 'Muted';
-    if(willUnmute) v.play().catch(()=>{});
-  };
+$$('.unmute').forEach(btn => btn.onclick = () => {
+  const v = btn.closest('.player').querySelector('.feed')._video; if(!v) return;
+  const willUnmute = v.muted;
+  $$('video').forEach(o => o.muted = true);
+  $$('.unmute span').forEach(s => s.textContent = 'Muted');
+  v.muted = !willUnmute;
+  btn.querySelector('span').textContent = willUnmute ? 'Sound on' : 'Muted';
+  if(willUnmute) v.play().catch(()=>{});
 });
 
-/* ---------- chat engine ---------- */
+/* ---------- chat ---------- */
 const COLORS = ['#c8b99a','#a8a29a','#8a9584','#b5a48c','#9c8f80','#b85c47','#d1c7b4','#7f8a8f'];
 const userColor = {};
 const colorFor = u => userColor[u] || (userColor[u] = COLORS[Object.keys(userColor).length % COLORS.length]);
-
 const SCRIPTS = {
-  s06: [
-    ['NightOwl','most of these are dead'], ['Watcher_01','one isn\'t'], ['DarkPassenger','he\'s hovering'],
-    ['GhostUser','let him find it'], ['Watcher_01','he hesitated'], ['NightOwl','they always hesitate'],
-    ['GhostUser','everyone clicks eventually'], ['SYS','{me} is viewing this thread']
-  ],
   s07: [
     ['SYS','verified buyers only'], ['BidKing','A-0417 reserved'], ['ZeroDay','pickup window?'],
     ['Silent_Man','A-0421 install looks clean'], ['NullPointer','new listing pending review'], ['BidKing','hold on A-0426'],
@@ -1084,7 +925,7 @@ const SCRIPTS = {
   s15: [
     ['SYS','ARCHIVE: COLE LEWIS · unlocked'], ['Watcher_01','there it is'], ['GhostUser','over a decade'],
     ['DarkPassenger','he stopped breathing'], ['ZeroDay','start at 001'], ['NullPointer','the woods one is my favorite'],
-    ['SYS','1 new file added'], ['GhostUser','check the last folder, {me}']
+    ['SYS','1 new file added'], ['GhostUser','check the viewers folder, {me}']
   ]
 };
 const REPLIES = [
@@ -1093,38 +934,31 @@ const REPLIES = [
   '{me}: awareness partial', 'log off. we\'ll keep watching.'
 ];
 const sub = t => t.replace(/\{me\}/g, HANDLE).replace(/\{time\}/g, new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}));
-
+function isVisible(el){ const r = el.getBoundingClientRect(); return r.bottom > 0 && r.top < innerHeight; }
 function addMsg(log, who, txt, cls=''){
-  const now = new Date();
+  const n = new Date(), t = `${pad(n.getHours())}:${pad(n.getMinutes())}`;
   const el = document.createElement('div');
   if(who === 'SYS'){
     el.className = 'msg sys';
-    el.innerHTML = `<span class="t">${pad(now.getHours())}:${pad(now.getMinutes())}</span><span class="txt">— ${safe(sub(txt))}</span>`;
+    el.innerHTML = `<span class="t">${t}</span><span class="txt">— ${safe(sub(txt))}</span>`;
   }else{
     el.className = 'msg ' + cls;
     const col = cls.includes('me') ? 'var(--text)' : colorFor(who);
-    el.innerHTML = `<span class="t">${pad(now.getHours())}:${pad(now.getMinutes())}</span><span class="who" style="color:${col}">${safe(who)}</span><span class="txt">${safe(sub(txt))}</span>`;
+    el.innerHTML = `<span class="t">${t}</span><span class="who" style="color:${col}">${safe(who)}</span><span class="txt">${safe(sub(txt))}</span>`;
   }
   log.appendChild(el);
   while(log.children.length > 14) log.firstElementChild.remove();
-  if(soundOn && audio && isVisible(log)) audio.blip(cls.includes('direct') ? 520 : 1250, .05, .025);
+  if(isVisible(log)) blip(cls.includes('direct') ? 520 : 1250, .05, .025);
 }
-function isVisible(el){ const r = el.getBoundingClientRect(); return r.bottom > 0 && r.top < innerHeight; }
-
 const chats = {};
 $$('.chat[data-chat]').forEach(c => {
   const key = c.dataset.chat, log = $('.chat-log', c), lines = SCRIPTS[key];
-  let i = 0;
-  lines.slice(0,6).forEach(([w,t]) => addMsg(log, w, t)); i = 6;
-  chats[key] = { log, running:false, timer:null };
-  const step = () => {
-    const [w,t] = lines[i % lines.length]; i++;
-    addMsg(log, w, t);
-    chats[key].timer = setTimeout(step, rand(1800, 3600));
-  };
-  chats[key].start = () => { if(!chats[key].running){ chats[key].running = true; step(); } };
-  chats[key].stop  = () => { chats[key].running = false; clearTimeout(chats[key].timer); };
-
+  lines.slice(0,6).forEach(([w,t]) => addMsg(log, w, t));
+  let i = 6;
+  const ch = chats[key] = { log, running:false, timer:null };
+  const step = () => { const [w,t] = lines[i % lines.length]; i++; addMsg(log, w, t); ch.timer = setTimeout(step, rand(1800, 3600)); };
+  ch.start = () => { if(!ch.running){ ch.running = true; step(); } };
+  ch.stop  = () => { ch.running = false; clearTimeout(ch.timer); };
   $('.chat-form', c).addEventListener('submit', e => {
     e.preventDefault();
     const inp = $('input', c), val = inp.value.trim(); if(!val) return;
@@ -1132,43 +966,29 @@ $$('.chat[data-chat]').forEach(c => {
     setTimeout(() => addMsg(log, pick(['GhostUser','DarkPassenger','Watcher_01','ZeroDay']), pick(REPLIES), 'direct'), rand(900, 2000));
   });
 });
-// only animate chats that are on screen
 const cio = new IntersectionObserver(es => es.forEach(e => {
-  const ch = chats[e.target.dataset.chat]; if(!ch) return;
-  e.isIntersecting ? ch.start() : ch.stop();
+  const ch = chats[e.target.dataset.chat]; if(ch) e.isIntersecting ? ch.start() : ch.stop();
 }), { threshold:.2 });
 $$('.chat[data-chat]').forEach(c => cio.observe(c));
 
-/* ---------- scroll: rail, url bar, progress ---------- */
-const scenes = $$('.scene');
-const railBtns = $$('#rail button');
-let current = null;
-function setUrl(host, path){
-  $('#urlHost').textContent = host; $('#urlPath').textContent = path;
-}
+/* ---------- scroll: nav state, address, story beats ---------- */
+const navMap = { live:'live', featured:'featured', cole:'cole', telemetry:'cole', archive:'archive' };
 const sio = new IntersectionObserver(es => es.forEach(e => {
   if(!e.isIntersecting) return;
-  const s = e.target; if(current === s.id) return; current = s.id;
-  setUrl(s.dataset.host, s.dataset.path);
-  railBtns.forEach(b => {
-    const on = b.dataset.go === s.id;
-    if(b.classList.contains('active') && !on) b.classList.add('seen');
-    b.classList.toggle('active', on);
-  });
-  document.title = s.id === 's06' ? 'PURCHASED' : `PURCHASED — ${s.dataset.host}`;
-  if(s.id === 's07') setTimeout(revealNewListing, 3500);
-  if(s.id === 's09') setTimeout(() => { const f = $('#bedCam .figure'); if(f && !f.dataset.done){ f.dataset.done = 1; f.classList.add('pass'); } }, 4000);
-  if(s.id === 's12') startClimb();
+  const s = e.target;
+  $('#addr').innerHTML = `<b>hmkt_live.onion</b>${s.dataset.addr}`;
+  $$('#sitenav button').forEach(b => b.classList.toggle('on', b.dataset.go === navMap[s.id]));
+  if(s.id === 'live') setTimeout(revealNewListing, 5000);
+  if(s.id === 'featured') setTimeout(revealNewListing, 2500);
+  if(s.id === 'cole'){
+    hideToast();
+    setTimeout(() => { const f = $('#bedCam .figure'); if(f && !f.dataset.done){ f.dataset.done = 1; f.classList.add('pass'); } }, 4000);
+  }
+  if(s.id === 'telemetry') startClimb();
+  if(s.id === 'end') playEnd();
 }), { rootMargin:'-45% 0px -45% 0px' });
-scenes.forEach(s => sio.observe(s));
+$$('main > section').forEach(s => sio.observe(s));
 
-addEventListener('scroll', () => {
-  const main = $('.scenes'), r = main.getBoundingClientRect();
-  const p = Math.min(1, Math.max(0, (innerHeight*.5 - r.top) / r.height));
-  $('#progress').style.width = (p*100) + '%';
-}, { passive:true });
-
-/* any [data-go] jumps to that scene */
 document.addEventListener('click', e => {
   const t = e.target.closest('[data-go]'); if(!t) return;
   e.preventDefault();
@@ -1176,39 +996,26 @@ document.addEventListener('click', e => {
   if(dest) dest.scrollIntoView({ behavior:'smooth', block:'start' });
 });
 
-/* ---------- scene 06: the link ---------- */
-$('#onionLink').addEventListener('click', e => {
-  e.preventDefault();
-  const bo = $('#blackout'); bo.classList.add('on'); setTimeout(() => bo.classList.remove('on'), 900);
-  $('#forumList').style.display = 'none';
-  $('#connect').classList.add('on');
-  setUrl('hmkt_live.onion', '/');
-  const steps = $$('#steps div');
-  steps.forEach((d, i) => setTimeout(() => { d.classList.add('show'); if(soundOn && audio) audio.blip(700 + i*60, .04, .02); }, 450*(i+1)));
-  setTimeout(() => $('#landing').classList.add('show'), 450*(steps.length+1));
-  addMsg(chats.s06.log, 'GhostUser', 'he clicked it.');
-  setTimeout(() => addMsg(chats.s06.log, 'NightOwl', 'welcome, {me}', 'direct'), 1400);
-});
-let postMin = 4;
-setInterval(() => { postMin++; $('#postAge').textContent = postMin + ' min'; }, 60000);
-
-/* ---------- scene 07: tabs + new listing ---------- */
+/* ---------- listings ---------- */
 $$('#tabs button').forEach(b => b.onclick = () => {
   $$('#tabs button').forEach(x => x.classList.toggle('on', x === b));
   const f = b.dataset.f;
   $$('#listings .card').forEach(c => {
     if(c.id === 'newCard' && !c.classList.contains('show')) return;
-    c.style.display = (f === 'all' || c.dataset.status === f || (f==='live' && c.id==='newCard')) ? '' : 'none';
+    c.style.display = (f === 'all' || c.dataset.status === f) ? '' : 'none';
   });
 });
 let revealed = false, listedAt = null;
+function hideToast(){ $('#toast').classList.remove('show'); }
 function revealNewListing(){
   if(revealed) return; revealed = true; listedAt = Date.now();
   $('#newCard').classList.add('show');
+  $('#liveCount').textContent = 5;
   $('#toast').classList.add('show');
+  setTimeout(hideToast, 9000);
   addMsg(chats.s07.log, 'SYS', 'new listing · LOT A-0430 · Cole L.');
   setTimeout(() => addMsg(chats.s07.log, 'GhostUser', 'there he is'), 1200);
-  if(soundOn && audio) audio.blip(440, .25, .05);
+  blip(440, .25, .05);
 }
 setInterval(() => {
   if(!listedAt) return;
@@ -1216,23 +1023,24 @@ setInterval(() => {
   $('#listedAgo').textContent = m < 1 ? 'just now' : `${m} min ago`;
 }, 5000);
 
-/* ---------- scene 08: cam switch (cosmetic) ---------- */
+/* ---------- featured stream: camera switch ---------- */
 $('[data-cam]').onclick = function(){
   const f = $('#vicFeed'); const n = (+(f.dataset.cam || 2) % 5) + 1; f.dataset.cam = n;
-  f.className = 'feed ' + (['','v-flip','','v-tight','v-ir','v-tight-r'][n] || '') + (f._video && f._video.readyState >= 2 ? ' ready' : '');
+  const ready = f.classList.contains('ready');
+  f.className = 'feed ' + (['','v-flip','','v-tight','v-ir','v-tight-r'][n] || '') + (ready ? ' ready' : '');
   const rooms = ['','Hallway','Bedroom','Bedroom doorway','Kitchen','Front door'];
   $('.osd .tl', f).textContent = `CAM 0${n} · ${rooms[n]}`;
   this.textContent = `CAM ${n}/5 ⇄`;
 };
 
-/* ---------- scene 09: expand a cam ---------- */
+/* ---------- Cole's cams: expand one ---------- */
 $$('#camgrid .feed').forEach(f => f.onclick = () => {
   const g = $('#camgrid');
   if(g.classList.contains('solo')){ g.classList.remove('solo'); f.classList.remove('focus'); }
   else { $$('.feed', g).forEach(x => x.classList.remove('focus')); f.classList.add('focus'); g.classList.add('solo'); }
 });
 
-/* ---------- scene 12: you can't turn it off ---------- */
+/* ---------- telemetry: nothing turns it off ---------- */
 const wifi = $('#wifiSwitch');
 wifi.onclick = () => {
   if(!wifi.classList.contains('on')) return;
@@ -1247,23 +1055,26 @@ wifi.onclick = () => {
 };
 $('#closeStream').onclick = () => {
   const f = $('#coleFeed'), m = $('#closedMsg');
-  f.classList.add('closed'); m.classList.add('show'); $('#closedSub').textContent = 'reconnecting…';
+  f.classList.add('closed'); m.classList.add('show'); $('#closedSub').textContent = 'reopening…';
   setTimeout(() => $('#closedSub').textContent = 'tab reopened', 1300);
-  setTimeout(() => { f.classList.remove('closed'); m.classList.remove('show'); addMsg(chats.s12.log, 'SYS', 'tabs reopened'); addMsg(chats.s12.log, 'NullPointer', 'he keeps trying'); }, 2900);
+  setTimeout(() => {
+    f.classList.remove('closed'); m.classList.remove('show');
+    addMsg(chats.s12.log, 'SYS', 'tabs reopened'); addMsg(chats.s12.log, 'NullPointer', 'he keeps trying');
+  }, 2900);
 };
 
-/* ---------- scene 15: archive ---------- */
+/* ---------- archive ---------- */
 const ARCHIVE = [
-  ['2014', 'ARCHIVE_001 — COLE_PLAYING_IN_WOODS',      'cole', 2,  'v-still'],
-  ['2014', 'ARCHIVE_002 — MOTHER_UNLOADING_GROCERIES', 'cole', 5,  'v-still v-flip'],
-  ['2016', 'ARCHIVE_003 — COLE_SLEEPING_DURING_STORM', 'cole', 8,  'v-ir'],
-  ['2018', 'ARCHIVE_004 — BEDROOM_BEFORE_DESK',        'cole', 11, 'v-still v-tight'],
-  ['2019', 'ARCHIVE_005 — COLE_OUTSIDE_ELEMENTARY',    'cole', 14, 'v-still v-flip'],
-  ['2021', 'ARCHIVE_1187 — CABIN_ARRIVAL_SUMMER',      'cole', 17, 'v-still v-tight-r'],
-  ['2023', 'ARCHIVE_2045 — GUEST_BEDROOM_NIGHT',       'cole', 20, 'v-ir v-flip'],
-  ['2025', 'ARCHIVE_2988 — KITCHEN_SMOKE_DETECTOR',    'cole', 23, 'v-dim'],
-  ['2026', 'ARCHIVE_3411 — DISCORD_CALL_MARCUS',       'cole', 1,  ''],
-  ['2026', 'ARCHIVE_3412 — LIVE_' + new Date().toISOString().slice(0,10), 'cole', 4, 'v-flip'],
+  ['2014', 'ARCHIVE_001 — COLE_PLAYING_IN_WOODS',      2,  'v-still'],
+  ['2014', 'ARCHIVE_002 — MOTHER_UNLOADING_GROCERIES', 5,  'v-still v-flip'],
+  ['2016', 'ARCHIVE_003 — COLE_SLEEPING_DURING_STORM', 8,  'v-ir'],
+  ['2018', 'ARCHIVE_004 — BEDROOM_BEFORE_DESK',        11, 'v-still v-tight'],
+  ['2019', 'ARCHIVE_005 — COLE_OUTSIDE_ELEMENTARY',    14, 'v-still v-flip'],
+  ['2021', 'ARCHIVE_1187 — CABIN_ARRIVAL_SUMMER',      17, 'v-still v-tight-r'],
+  ['2023', 'ARCHIVE_2045 — GUEST_BEDROOM_NIGHT',       20, 'v-ir v-flip'],
+  ['2025', 'ARCHIVE_2988 — KITCHEN_SMOKE_DETECTOR',    23, 'v-dim'],
+  ['2026', 'ARCHIVE_3411 — DISCORD_CALL_MARCUS',       1,  ''],
+  ['2026', 'ARCHIVE_3412 — LIVE_' + new Date().toISOString().slice(0,10), 4, 'v-flip'],
 ];
 const YEAR_COUNTS = { '2014':214, '2016':388, '2018':402, '2019':451, '2021':566, '2023':612, '2025':703, '2026':76 };
 const folders = $('#folders'), files = $('#files');
@@ -1276,54 +1087,52 @@ function folderBtn(label, count, key){
 folderBtn('All files', '3,412', 'all');
 Object.keys(YEAR_COUNTS).forEach(y => folderBtn(y, YEAR_COUNTS[y], y));
 folderBtn('Viewers', 1, 'viewers');
-
-function fileCard(name, date, key, t, variant, extra=''){
+function fileCard(name, date, t, variant, you=false){
   const d = document.createElement('button');
-  d.className = 'file ' + extra;
-  const src = MEDIA[key] ? MEDIA[key].split('#')[0] + '#t=' + t : null;
-  d.innerHTML = `<div class="feed ${variant}" data-still="1"><div class="nosig">${extra ? 'recording' : 'archived'}</div></div><div class="fn">${safe(name)}</div><div class="fd"><span>${date}</span><span>${rand(40,980)} MB</span></div>`;
-  const f = $('.feed', d);
-  if(src){
-    const v = document.createElement('video');
-    v.muted = true; v.preload = 'metadata'; v.playsInline = true; v.src = src;
+  d.className = 'file' + (you ? ' you' : '');
+  d.innerHTML = `<div class="feed ${variant}" data-still="1"><div class="nosig">${you ? 'recording' : 'archived'}</div></div><div class="fn">${safe(name)}</div><div class="fd"><span>${date}</span><span>${rand(40,980)} MB</span></div>`;
+  if(!you && MEDIA.cole){
+    const f = $('.feed', d), v = document.createElement('video');
+    v.muted = true; v.preload = 'metadata'; v.playsInline = true; v.src = MEDIA.cole.split('#')[0] + '#t=' + t;
     v.addEventListener('loadeddata', () => f.classList.add('ready'));
     f.prepend(v); f._video = v;
   }
   return d;
 }
 function viewerFile(){
-  const today = new Date().toISOString().slice(0,10);
-  const d = fileCard(`ARCHIVE_0001 — ${HANDLE.toUpperCase()}_${today}`, 'now', null, 0, '', 'you');
-  d.onclick = () => { $('#finale').scrollIntoView({behavior:'smooth'}); };
+  const d = fileCard(`ARCHIVE_0001 — ${HANDLE.toUpperCase()}_${new Date().toISOString().slice(0,10)}`, 'now', 0, '', true);
+  d.onclick = () => $('#end').scrollIntoView({behavior:'smooth'});
   return d;
 }
 function renderFiles(k){
   $$('#folders button').forEach(b => b.classList.toggle('on', b.dataset.k === k));
   files.innerHTML = '';
-  $('#crumb').textContent = k === 'viewers' ? 'ARCHIVE: VIEWERS' : (k === 'all' ? 'ARCHIVE: COLE LEWIS' : `ARCHIVE: COLE LEWIS / ${k}`);
+  $('#crumb').textContent = k === 'viewers' ? 'viewers' : `cole-lewis / ${k}`;
   if(k === 'viewers'){
     files.appendChild(viewerFile()); $('#fileCount').textContent = 1;
     addMsg(chats.s15.log, 'GhostUser', 'found yourself, {me}?', 'direct');
     return;
   }
-  const list = ARCHIVE.filter(a => k === 'all' || a[0] === k);
-  list.forEach(([y, n, key, t, v]) => files.appendChild(fileCard(n, y, key, t, v)));
-  if(k === 'all'){ files.appendChild(viewerFile()); }
+  ARCHIVE.filter(a => k === 'all' || a[0] === k).forEach(([y, n, t, v]) => files.appendChild(fileCard(n, y, t, v)));
   $('#fileCount').textContent = k === 'all' ? '3,412' : YEAR_COUNTS[k];
 }
 renderFiles('all');
 
-/* ---------- finale ---------- */
+/* ---------- end of feed ---------- */
+let endPlayed = false;
+function playEnd(){
+  if(endPlayed) return; endPlayed = true;
+  const spans = $$('#endLines span');
+  spans.forEach(s => { s.style.opacity = .25; s.style.transition = 'opacity .8s'; });
+  spans.forEach((s, i) => setTimeout(() => { s.style.opacity = 1; blip(300 - i*40, .3, .03); }, 700 + i*1100));
+}
 $('#stayBtn').onclick = () => {
-  const lines = ['Eye contact.', 'Perfect.', 'Buyer arrived.']; const st = $('#finalStatus'); st.textContent = '';
-  lines.forEach((l, i) => setTimeout(() => { st.textContent = l; }, 900*i));
-  setTimeout(() => { st.textContent = `connection kept alive · ${HANDLE} added to archive`; }, 2900);
-  if(soundOn && audio) audio.blip(220, .6, .06);
-  setTimeout(() => $('#s06').scrollIntoView({behavior:'smooth'}), 4600);
+  $('#finalStatus').textContent = `connection kept alive · ${HANDLE} added to archive / viewers`;
+  blip(220, .6, .06);
+  setTimeout(() => { renderFiles('viewers'); $('#archive').scrollIntoView({behavior:'smooth'}); }, 2200);
 };
 $('#leaveBtn').onclick = () => {
-  const s = $('#finalStatus');
-  s.textContent = 'logging off…';
+  const s = $('#finalStatus'); s.textContent = 'logging off…';
   setTimeout(() => s.textContent = 'log off failed · session is persistent', 1400);
 };
 

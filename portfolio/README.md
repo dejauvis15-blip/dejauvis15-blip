@@ -4,7 +4,7 @@ An interactive 3D bedroom built with Next.js, React Three Fiber and GSAP.
 
 - **Monitor** → click it and the camera glides in to the screen, where my dev portfolio ([jauvis.dev](https://www.jauvis.dev)) is running live and fully clickable.
 - **Poster** → the big framed poster on the wall shows my [design portfolio](https://jauvis-dozier-portfolio.vercel.app/) live. Click it to zoom in and browse.
-- **Room view** → subtle mouse parallax, soft shadows, desk lamp, LED strip, dust particles.
+- **Room view** → a recreation of my actual room at night (green walls, wainscoting, window and curtains, standing desk with two monitors, pegboard, white PC) with a retro film grade: bloom, grain, scanlines, vignette and slight lens fringing. Subtle mouse parallax.
 - Leave a screen with **← Back to room**, **Esc**, or by clicking anywhere in the room around it.
 - On phones, zooming into a screen hands off to a full-screen view of that page.
 
@@ -27,7 +27,9 @@ Open http://localhost:3000.
 | --- | --- |
 | `lib/scene-config.ts` | Camera poses, screen positions/sizes, what each screen loads, timing |
 | `lib/content.ts` | Profile, projects, experience, contact (used by the desktop-OS mode) |
-| `components/scene/PlaceholderRoom.tsx` | Primitive stand-in room (walls, desk, chair, bed, plant…) |
+| `components/scene/Bedroom.tsx` | The room, built from primitives to match my photos |
+| `lib/textures.ts` | Procedural textures (wood floor, paint, desk mat, pegboard, art) |
+| `components/scene/Effects.tsx` / `components/FilmOverlay.tsx` | Retro grade (WebGL post-processing + CSS grain over the live pages) |
 | `components/scene/Monitor.tsx` | Interactive monitor (hover glow, click to zoom) |
 | `components/scene/DesignPoster.tsx` | Interactive poster with the design portfolio |
 | `components/scene/LiveScreen.tsx` | Maps a real web page onto a 3D surface |
@@ -35,6 +37,10 @@ Open http://localhost:3000.
 | `components/ScreenControls.tsx` | Back-to-room bar, Esc handling, phone full-screen fallback |
 | `components/desktop/*` | Optional desktop-OS portfolio (draggable windows, dock, apps) |
 | `public/site/` | Copy of the Dev-Portfolio site shown on the monitor |
+
+## Retro look
+
+`LOOK.retro` in `lib/scene-config.ts` turns the film grade on or off. Tune the WebGL side in `components/scene/Effects.tsx` and the CSS grain/scanlines at the bottom of `app/globals.css`.
 
 ## Updating the site on the monitor
 

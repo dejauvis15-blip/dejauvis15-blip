@@ -26,33 +26,34 @@ function useScreenTexture() {
     const ctx = canvas.getContext("2d")!;
     const draw = () => {
       const { width: w, height: h } = canvas;
-      drawWallpaper(ctx, w, h);
-      const now = new Date();
-      ctx.fillStyle = "rgba(255,255,255,0.95)";
-      ctx.textAlign = "center";
-      ctx.font = "600 150px system-ui, -apple-system, Segoe UI, sans-serif";
-      ctx.fillText(now.toLocaleTimeString([], { hour: "numeric", minute: "2-digit" }), w / 2, h * 0.42);
-      ctx.font = "500 36px system-ui, -apple-system, Segoe UI, sans-serif";
-      ctx.fillStyle = "rgba(255,255,255,0.75)";
-      ctx.fillText(now.toLocaleDateString([], { weekday: "long", month: "long", day: "numeric" }), w / 2, h * 0.52);
-      // avatar + name
-      ctx.fillStyle = "rgba(255,255,255,0.18)";
-      ctx.beginPath();
-      ctx.arc(w / 2, h * 0.7, 46, 0, Math.PI * 2);
-      ctx.fill();
-      ctx.fillStyle = "#fff";
-      ctx.font = "600 40px system-ui, sans-serif";
-      ctx.fillText(PROFILE.firstName[0], w / 2, h * 0.7 + 14);
-      ctx.font = "600 34px system-ui, sans-serif";
-      ctx.fillText(PROFILE.name, w / 2, h * 0.82);
-      ctx.font = "400 26px system-ui, sans-serif";
-      ctx.fillStyle = "rgba(255,255,255,0.7)";
-      ctx.fillText("Click to sign in", w / 2, h * 0.88);
+      if (MONITOR_CONTENT === "desktop") {
+        drawWallpaper(ctx, w, h);
+      } else {
+        // Mirrors the dev site (black, snow, mono type) so the hand-off from
+        // this texture to the live page underneath is invisible.
+        ctx.fillStyle = "#050505";
+        ctx.fillRect(0, 0, w, h);
+        for (let i = 0; i < 160; i++) {
+          const r = ((i * 9301 + 49297) % 233280) / 233280;
+          const q = ((i * 4253 + 1931) % 1000) / 1000;
+          ctx.fillStyle = `rgba(255,251,244,${0.25 + q * 0.6})`;
+          ctx.beginPath();
+          ctx.arc(r * w, h * 0.55 + q * h * 0.4, 1 + q * 3, 0, Math.PI * 2);
+          ctx.fill();
+        }
+        ctx.fillStyle = "#e9e4da";
+        ctx.fillRect(0, h * 0.94, w, h * 0.06);
+      }
+      ctx.fillStyle = "rgba(240,236,228,0.92)";
+      ctx.textAlign = "left";
+      ctx.font = "500 44px ui-monospace, Menlo, monospace";
+      ctx.fillText(PROFILE.name.toLowerCase(), w * 0.25, h * 0.2);
+      ctx.font = "400 22px ui-monospace, Menlo, monospace";
+      ctx.fillStyle = "rgba(240,236,228,0.6)";
+      ctx.fillText("click to sit down", w * 0.25, h * 0.28);
       texture.needsUpdate = true;
     };
     draw();
-    const id = window.setInterval(draw, 30_000);
-    return () => window.clearInterval(id);
   }, [canvas, texture]);
 
   return texture;
@@ -81,14 +82,14 @@ export function Monitor() {
   useFrame((_, dt) => {
     const on = hovered && interactive ? 1 : 0;
     if (screenMat.current) {
-      const target = on ? 1 : 0.82;
+      const target = on ? 1 : 0.85;
       const c = screenMat.current.color;
       const v = THREE.MathUtils.damp(c.r, target, 8, dt);
       c.setRGB(v, v, v);
     }
     if (glowMat.current) glowMat.current.opacity = THREE.MathUtils.damp(glowMat.current.opacity, on * 0.55, 8, dt);
     if (screenLight.current)
-      screenLight.current.intensity = THREE.MathUtils.damp(screenLight.current.intensity, 0.5 + on * 0.5, 8, dt);
+      screenLight.current.intensity = THREE.MathUtils.damp(screenLight.current.intensity, 0.35 + on * 0.4, 8, dt);
   });
 
   const onOver = (e: ThreeEvent<PointerEvent>) => {
@@ -111,16 +112,16 @@ export function Monitor() {
 
       {/* body / bezel */}
       <RoundedBox
-        args={[sw + b * 2, sh + b * 2 + 0.012, 0.03]}
+        args={[sw + b * 2, sh + b * 2 + 0.014, 0.022]}
         radius={0.008}
-        position={[0, -0.006, -0.016]}
+        position={[0, -0.007, -0.012]}
         castShadow
         receiveShadow
         onPointerOver={onOver}
         onPointerOut={onOut}
         onClick={onClick}
       >
-        <meshStandardMaterial color="#121318" roughness={0.35} metalness={0.4} />
+        <meshStandardMaterial color="#0d0d0e" roughness={0.35} metalness={0.3} />
       </RoundedBox>
 
       {/* the screen itself */}
@@ -130,20 +131,13 @@ export function Monitor() {
       </mesh>
       {MONITOR_CONTENT === "site" && <LiveScreen id="monitor" />}
 
-      {/* back housing, neck and foot */}
-      <RoundedBox args={[sw * 0.5, sh * 0.5, 0.05]} radius={0.015} position={[0, 0, -0.05]} castShadow>
-        <meshStandardMaterial color="#1a1b22" roughness={0.5} metalness={0.3} />
-      </RoundedBox>
-      <mesh position={[0, -0.25, -0.07]} castShadow>
-        <boxGeometry args={[0.045, 0.2, 0.025]} />
-        <meshStandardMaterial color="#c7c9d1" roughness={0.3} metalness={0.8} />
-      </mesh>
-      <RoundedBox args={[0.24, 0.012, 0.17]} radius={0.004} position={[0, sy * -1 + 0.781, -0.05]} castShadow receiveShadow>
-        <meshStandardMaterial color="#c7c9d1" roughness={0.3} metalness={0.8} />
+      {/* back plate where the arm attaches (arm itself is part of the room) */}
+      <RoundedBox args={[sw * 0.42, sh * 0.42, 0.035]} radius={0.01} position={[0, -0.01, -0.045]} castShadow>
+        <meshStandardMaterial color="#141414" roughness={0.5} metalness={0.3} />
       </RoundedBox>
 
       {/* light spill from the screen onto the desk */}
-      <pointLight ref={screenLight} position={[0, -0.05, 0.25]} intensity={0.5} distance={1.4} decay={2} color="#a5b4fc" />
+      <pointLight ref={screenLight} position={[0, -0.05, 0.25]} intensity={0.35} distance={1.2} decay={2} color="#e8eefc" />
 
       {/* hint bubble */}
       <Html position={[0, sh / 2 + 0.09, 0]} center zIndexRange={[10, 0]} style={{ pointerEvents: "none" }}>

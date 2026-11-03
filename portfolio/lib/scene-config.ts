@@ -44,8 +44,8 @@ export interface ScreenConfig {
 
 export const SCREENS: Record<ScreenId, ScreenConfig> = {
   monitor: {
-    center: [0, 1.13, -2.24],
-    size: [0.64, 0.36], // 16:9 ≈ 27" monitor
+    center: [0.3, 0.99, -2.06],
+    size: [0.6, 0.3375], // 16:9 ≈ 27" monitor
     url: "/site/index.html",
     virtual: [1280, 720],
     title: "jauvis.dev",
@@ -53,30 +53,31 @@ export const SCREENS: Record<ScreenId, ScreenConfig> = {
     hint: "Dev portfolio",
   },
   poster: {
-    center: [-1.05, 1.72, -2.468],
-    size: [0.6, 0.85],
+    // framed poster in the wainscot panel, left of the pegboard
+    center: [-1.72, 1.29, -2.268],
+    size: [0.37, 0.52],
     url: "https://jauvis-dozier-portfolio.vercel.app/",
-    virtual: [900, 1275],
+    virtual: [900, 1265],
     title: "Design portfolio",
     hint: "Design portfolio",
   },
 };
 
-export const MONITOR_BEZEL = 0.018;
+export const MONITOR_BEZEL = 0.008;
 
 export const CAMERA = {
-  fov: 38,
-  /** Cinematic resting position, facing the desk. */
+  fov: 42,
+  /** Cinematic resting position: front-left of the desk, like the photos. */
   room: {
-    position: [1.75, 1.62, 1.35] as Vec3,
-    target: [-0.15, 1.05, -2.05] as Vec3,
+    position: [-0.55, 1.55, 0.95] as Vec3,
+    target: [-0.2, 1.22, -2.2] as Vec3,
   },
   /** Where the intro fly-in starts. */
   intro: {
-    position: [3.4, 2.6, 3.8] as Vec3,
+    position: [-1.2, 2.1, 2.9] as Vec3,
   },
   /** How far (m) the camera drifts with the mouse in room view. */
-  parallax: { x: 0.28, y: 0.14 },
+  parallax: { x: 0.22, y: 0.1 },
   /** Narrow screens get pulled back so the desk still fits. */
   mobilePullback: 1.45,
   /** Breathing room around a live screen when zoomed in (1 = edge to edge). */
@@ -85,6 +86,12 @@ export const CAMERA = {
 
 /** Below this width, zooming into a screen hands off to a full-screen view. */
 export const COMPACT_QUERY = "(max-width: 767px)";
+
+/** Look & feel. */
+export const LOOK = {
+  /** Film grade: bloom, grain, vignette, slight chromatic aberration. */
+  retro: true,
+};
 
 export const TIMING = {
   intro: 2.2,

@@ -2,6 +2,7 @@
 
 import dynamic from "next/dynamic";
 import { Desktop } from "./desktop/Desktop";
+import { FilmOverlay } from "./FilmOverlay";
 import { Loader } from "./Loader";
 import { RoomHud } from "./RoomHud";
 import { ScreenControls } from "./ScreenControls";
@@ -16,6 +17,7 @@ export function Experience() {
       <RoomHud />
       <Desktop />
       <ScreenControls />
+      <FilmOverlay />
       <Loader />
     </main>
   );

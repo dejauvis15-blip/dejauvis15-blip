@@ -1,0 +1,29 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: var(--font-mono-face), ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+
+:root {
+  --win-bg: rgba(248, 248, 250, 0.9);
+  --win-fg: #171717;
+  color-scheme: dark;
+}
+
+html,
+body {
+  height: 100%;
+  background: #0d0e14;
+  overscroll-behavior: none;
+}
+
+body {
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Windows are light; let their inputs/scrollbars render light too. */
+[role="dialog"] {
+  color-scheme: light;
+}

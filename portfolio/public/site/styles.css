@@ -1,0 +1,102 @@
+:root {
+  /* Palette */
+  --black: #000000;   /* pure black: main color */
+  --olive: #565449;   /* olive drab */
+  --bone: #d8cfbc;    /* bone */
+  --floral: #fffbf4;  /* floral white: text / accent */
+
+  --bg: var(--black);
+  --fg: var(--floral);
+  --muted: var(--bone);
+  --dim: rgba(216, 207, 188, 0.55);
+  --hover: var(--floral);
+  --border: rgba(216, 207, 188, 0.18);
+  --size: 13px;
+  --snow-h: clamp(180px, 34vh, 320px);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { max-width: 100vw; overflow-x: hidden; }
+body {
+  min-height: 100vh;
+  padding-bottom: calc(var(--snow-h) * 0.6);
+  background-color: var(--bg);
+  color: var(--fg);
+  /* Same type as alex-chen.dev: JetBrains Mono, 13px, weight 500, wide tracking */
+  font-family: "JetBrains Mono", ui-monospace, monospace;
+  font-size: var(--size);
+  font-weight: 500;
+  letter-spacing: 0.05em;
+  line-height: 1.48;
+  -webkit-font-smoothing: antialiased;
+}
+a { color: inherit; text-decoration: none; }
+::selection { background: var(--olive); color: var(--hover); }
+.muted { color: var(--dim); }
+
+.page { max-width: 800px; margin: 0 auto; padding: 1.4rem 2rem 2rem; position: relative; z-index: 1; }
+
+/* Header */
+.top { display: flex; justify-content: space-between; align-items: center; gap: 1rem; padding: 0.5rem 0 1rem; }
+.top-left { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+.name { font-family: "Reenie Beanie", cursive; font-size: clamp(28px, 4.5vw, 36px); font-weight: 400; letter-spacing: 0.02em; color: var(--fg); line-height: 1; }
+.socials { display: flex; gap: 12px; }
+.socials a { display: flex; color: var(--muted); opacity: 0.7; transition: opacity .15s, transform .15s; }
+.socials a:hover { opacity: 1; transform: translateY(-1px); }
+.socials svg { width: 14px; height: 14px; }
+
+.avatar {
+  /* transparent cutout, so no box: the figure sits straight on the page */
+  display: block; flex-shrink: 0; width: 168px; aspect-ratio: 340 / 192;
+  transition: transform .2s, filter .2s;
+}
+.avatar:hover { transform: scale(1.04); filter: drop-shadow(0 0 10px rgba(255, 251, 244, 0.22)); }
+.avatar-img { width: 100%; height: 100%; object-fit: contain; display: block; }
+
+.bio { color: var(--muted); max-width: 60ch; padding: 0 12px 0.5rem 0; }
+
+/* Sections */
+.block { padding: 13px 0; }
+.label { font-size: var(--size); font-weight: 800; /* heaviest JetBrains Mono weight on Google Fonts */ color: var(--bone); letter-spacing: 0.05em; margin-bottom: 11px; }
+
+.row {
+  display: flex; justify-content: space-between; align-items: center; gap: 12px;
+  margin: 2px 0; padding: 6px 12px; border-radius: 8px;
+  transition: background .15s, color .15s;
+}
+a.row:hover { background: rgba(86, 84, 73, 0.45); color: var(--hover); }
+.row-left { min-width: 0; }
+.desc { color: var(--dim); }
+.meta { color: var(--dim); flex-shrink: 0; text-align: right; display: inline-flex; align-items: center; gap: 8px; }
+.logo { width: auto; height: 14px; display: block; }
+a.row:hover .meta { color: var(--bone); }
+
+.misc { display: block; margin: 2px 0; padding: 6px 12px; border-radius: 8px; transition: background .15s, color .15s; }
+a.misc:hover { background: rgba(86, 84, 73, 0.45); color: var(--hover); }
+a.row:focus-visible, a.misc:focus-visible { outline: 1px solid var(--bone); outline-offset: 2px; }
+.sep { color: var(--olive); margin: 0 0.5rem; }
+/* Pads each label to its section's longest one (--key chars, plus the old space) so the | separators line up */
+.key { display: inline-block; width: calc((var(--key) + 1) * (1ch + 0.05em)); }
+.u { text-decoration: underline; text-underline-offset: 0.2em; text-decoration-thickness: 1px; text-decoration-color: var(--bone); border-radius: 2px; transition: background .15s; }
+.u:hover { background: rgba(86, 84, 73, 0.5); color: var(--hover); }
+
+/* Falling snow along the bottom */
+.snow { position: fixed; left: 0; right: 0; bottom: 0; width: 100%; height: var(--snow-h); pointer-events: none; display: block; }
+
+/* Entrance */
+.fade { opacity: 0; transform: translateY(6px); animation: in .5s ease forwards; animation-delay: calc(var(--d) * 80ms); }
+@keyframes in { to { opacity: 1; transform: none; } }
+
+@media (max-width: 600px) {
+  :root { --snow-h: clamp(130px, 24svh, 190px); }
+  .page { padding: 1.15rem 1.25rem 1.5rem; }
+  .top { align-items: flex-start; }
+  .avatar { width: 116px; }
+  /* Keep "role | company" on one line; the date drops below it */
+  .row { padding: 6px 8px; flex-wrap: wrap; row-gap: 2px; }
+  .row-left { white-space: nowrap; }
+  .misc { padding: 6px 8px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .fade { animation: none; opacity: 1; transform: none; }
+}

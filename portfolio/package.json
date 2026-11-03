@@ -1,0 +1,31 @@
+{
+  "name": "jauvis-portfolio",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "typecheck": "tsc --noEmit",
+    "sync-site": "bash scripts/sync-site.sh"
+  },
+  "dependencies": {
+    "@react-three/drei": "^10.7.9",
+    "@react-three/fiber": "^9.8.2",
+    "gsap": "^3.15.0",
+    "next": "^16.4.4",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0",
+    "three": "^0.180.0",
+    "zustand": "^5.0.16"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4.3.4",
+    "@types/node": "^22.20.5",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "@types/three": "^0.180.0",
+    "tailwindcss": "^4.3.4",
+    "typescript": "^5.9.0"
+  }
+}

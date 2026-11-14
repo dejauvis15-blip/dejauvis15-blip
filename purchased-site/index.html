@@ -220,6 +220,7 @@ button.pill:hover{ color:var(--text); }
 .v-flip video{ transform:scaleX(-1); }
 .v-tight video{ transform:scale(1.55); transform-origin:30% 40%; }
 .v-tight2 video{ transform:scale(1.7); transform-origin:60% 30%; }
+.v-crop-tl video{ transform:scale(1.25); transform-origin:100% 100%; }
 .v-ir video{ filter:grayscale(1) contrast(1.35) brightness(.8) sepia(.12); }
 .v-dim video{ filter:saturate(.3) brightness(.55) contrast(1.2); }
 .v-still video{ filter:grayscale(.85) sepia(.35) contrast(1.05) brightness(.8); }
@@ -494,7 +495,7 @@ button.pill:hover{ color:var(--text); }
   <div class="run">
     <span><b>VERIFIED BUYERS ONLY</b></span>
     <span>LOT A-0417 · bid ₿ 1.284 · <span class="hot">reserved</span></span>
-    <span>LOT A-0421 · 274 watching</span>
+    <span>LOT A-0421 · Dre · 274 watching</span>
     <span>LOT A-0426 · install scheduled</span>
     <span>LOT A-0398 · <b>collected</b></span>
     <span>LOT A-0430 · <span class="hot">pending review</span></span>
@@ -527,10 +528,10 @@ button.pill:hover{ color:var(--text); }
             </div>
           </button>
           <button class="card" data-status="live">
-            <div class="feed v-tight2" data-src="subject3"><div class="nosig">connecting</div><span class="chip live badge">Live</span><span class="watch viewers"><span class="vc" data-n="274">274</span> watching</span></div>
+            <div class="feed" data-src="dre"><div class="nosig">connecting</div><span class="chip live badge">Live</span><span class="watch viewers"><span class="vc" data-n="274">274</span> watching</span></div>
             <div class="card-body">
-              <div class="card-row"><span class="name">Casey M. · 27</span><span class="lot">LOT A-0421</span></div>
-              <div class="loc">Home office · cam 1 of 3</div>
+              <div class="card-row"><span class="name">Dre</span><span class="lot">LOT A-0421</span></div>
+              <div class="loc">Gaming room · cam 1 of 2</div>
               <div class="stats"><div><b>Current bid</b><span class="bid">₿ 0.910</span></div><div><b>Ends in</b><span class="timer" data-s="4385">01:13:05</span></div></div>
             </div>
           </button>
@@ -612,10 +613,10 @@ button.pill:hover{ color:var(--text); }
       <div class="split">
         <div class="panel">
           <div class="camgrid" id="camgrid">
-            <div class="feed v-dim" data-src="cole-exterior"><div class="nosig">no motion</div><div class="osd"><span class="tl">CAM 01 · Outside the cabin</span><span class="tr"><span class="dot pulse"></span></span><span class="bl osd-time">--</span></div></div>
+            <div class="feed v-dim v-crop-tl" data-src="cole-exterior"><div class="nosig">no motion</div><div class="osd"><span class="tl">CAM 01 · Outside the cabin</span><span class="tr"><span class="dot pulse"></span></span><span class="bl osd-time">--</span></div></div>
             <div class="feed v-tight" data-src="cole-kitchen"><div class="nosig">no motion</div><div class="osd"><span class="tl">CAM 02 · Kitchen</span><span class="tr"><span class="dot pulse"></span></span><span class="bl osd-time">--</span></div></div>
-            <div class="feed v-ir" data-src="cole-bathroom"><div class="nosig">no motion</div><div class="osd"><span class="tl">CAM 03 · Bathroom</span><span class="tr"><span class="dot pulse"></span></span><span class="bl osd-time">--</span></div></div>
-            <div class="feed hot" data-src="cole" id="bedCam"><div class="nosig">awaiting signal</div><div class="figure"></div><div class="osd"><span class="tl">CAM 04 · Guest bedroom ● motion</span><span class="tr">tap to expand</span><span class="bl osd-time">--</span></div></div>
+            <div class="feed v-ir v-tight2" data-src="cole-bathroom"><div class="nosig">no motion</div><div class="osd"><span class="tl">CAM 03 · Bathroom</span><span class="tr"><span class="dot pulse"></span></span><span class="bl osd-time">--</span></div></div>
+            <div class="feed hot v-crop-tl" data-src="cole" id="bedCam"><div class="nosig">awaiting signal</div><div class="figure"></div><div class="osd"><span class="tl">CAM 04 · Guest bedroom ● motion</span><span class="tr">tap to expand</span><span class="bl osd-time">--</span></div></div>
           </div>
         </div>
         <div class="panel chat" data-chat="s09">
@@ -640,7 +641,7 @@ button.pill:hover{ color:var(--text); }
             <span class="title"><span class="chip live">Live</span> Cole Lewis · Cam 04</span>
             <span class="viewers"><span class="vc vc-climb" data-n="12">12</span> watching</span>
           </div>
-          <div class="feed" data-src="cole-live" id="coleFeed">
+          <div class="feed v-crop-tl" data-src="cole-live" id="coleFeed">
             <div class="nosig">reconnecting</div>
             <div class="osd"><span class="tl">CAM 04 · Guest bedroom · route: fallback</span><span class="tr"><span class="dot pulse"></span></span><span class="bl osd-time">--</span></div>
             <div class="closed-msg" id="closedMsg"><span>TAB CLOSED</span><b id="closedSub">reopening…</b></div>
@@ -742,20 +743,20 @@ button.pill:hover{ color:var(--text); }
 
 <script>
 /* =========================================================
-   MEDIA: put the three clips in /media (see media/README.md).
+   MEDIA: clips live in /media (see media/README.md).
    Missing files fall back to a styled "no signal" panel.
    ========================================================= */
 const MEDIA = {
   victoria:        'media/victoria.mp4',     // featured stream (looks toward the doorway)
   'victoria-card': 'media/victoria-2.mp4',   // listing card
-  subject3:        'media/subject3.mp4',     // "Casey M." listing card
+  dre:             'media/dre.mp4',          // "Dre" listing card (Bryce's footage)
   cole:            'media/cole.mp4',         // cam 04 · guest bedroom + new-listing card
-  'cole-exterior': 'media/cole-2.mp4',
-  'cole-kitchen':  'media/cole-3.mp4',
-  'cole-bathroom': 'media/cole-4.mp4',
-  'cole-live':     'media/cole-5.mp4',       // subject telemetry player
+  'cole-exterior': 'media/cole-2.mp4',       // placeholder until real exterior footage
+  'cole-kitchen':  'media/cole.mp4#t=12',    // placeholder until real kitchen footage
+  'cole-bathroom': 'media/cole-2.mp4#t=14',  // placeholder until real bathroom footage
+  'cole-live':     'media/cole-2.mp4',       // subject telemetry player
 };
-const ARCHIVE_CLIPS = ['media/cole-2.mp4','media/cole-3.mp4','media/cole-4.mp4','media/cole-5.mp4','media/cole-6.mp4','media/cole.mp4'];
+const ARCHIVE_CLIPS = ['media/cole.mp4','media/cole-2.mp4'];
 
 const $  = (s, r=document) => r.querySelector(s);
 const $$ = (s, r=document) => [...r.querySelectorAll(s)];
@@ -906,29 +907,56 @@ const SCRIPTS = {
   s07: [
     ['SYS','verified buyers only'], ['BidKing','A-0417 reserved'], ['ZeroDay','pickup window?'],
     ['Silent_Man','A-0421 install looks clean'], ['NullPointer','new listing pending review'], ['BidKing','hold on A-0426'],
-    ['SYS','new bid on LOT A-0417'], ['NullPointer','{me} hasn\'t bid'], ['Silent_Man','guest pass. just looking, {me}?']
+    ['SYS','new bid on LOT A-0417'], ['NullPointer','{me} hasn\'t bid'], ['Silent_Man','guest pass. just looking, {me}?'],
+    ['Hunter23','Dre stream is clean tonight'], ['Watcher_07','Dre hasn\'t moved from that chair in 3 hours'], ['BidKing','A-0421 under reserve still'],
+    ['ZeroDay','how many cams on Dre?'], ['NullPointer','two. desk and doorway'], ['SYS','LOT A-0421 · bid ₿ 0.910'],
+    ['Lurker_88','is A-0398 really collected?'], ['Silent_Man','yesterday. smooth.'], ['GhostUser','A-0426 install crew is on site'],
+    ['DarkPassenger','who\'s the new one pending?'], ['NullPointer','can\'t say until it\'s live'], ['ZeroDay','timer on A-0417 is moving fast'],
+    ['SYS','14 buyers joined'], ['Watcher_07','refresh rate is slow tonight'], ['BidKing','{me} you watching or buying?']
   ],
   s08: [
     ['Watcher_03','Pretty.'], ['Hunter23','How long until pickup?'], ['DarkPassenger','Already reserved.'],
     ['NullPointer','she paused the movie'], ['Watcher_03','she\'s looking at the doorway'], ['Hunter23','nothing there. yet.'],
-    ['SYS','bid placed · ₿ 1.284'], ['SYS','viewer exited: C. Lewis']
+    ['SYS','bid placed · ₿ 1.284'], ['Lurker_88','what is she watching'], ['ZeroDay','something with subtitles'],
+    ['BidKing','popcorn again. every night.'], ['Silent_Man','routine helps'], ['GhostUser','cam 3 has the hallway'],
+    ['Watcher_03','she checked her phone'], ['Hunter23','she won\'t call anyone'], ['DarkPassenger','she never does'],
+    ['SYS','reserve met · A-0417'], ['NullPointer','door is unlocked btw'], ['Watcher_07','she turned the volume up'],
+    ['ZeroDay','good. she can\'t hear the driveway'], ['SYS','viewer exited: C. Lewis'], ['GhostUser','he left. he\'ll be back.']
   ],
   s09: [
     ['SYS','LOT A-0430 · COLE LEWIS · live'], ['ZeroDay','he found his own listing'], ['Watcher_12','took him long enough'],
     ['Hunter23','he turned around'], ['GhostUser','nothing there. for him.'], ['ZeroDay','check feed 4. behind him.'],
-    ['DarkPassenger','he didn\'t see it'], ['SYS','feed 4 · motion detected']
+    ['DarkPassenger','he didn\'t see it'], ['SYS','feed 4 · motion detected'], ['Lurker_88','is he on the phone?'],
+    ['NullPointer','Marcus. same as every night'], ['Watcher_07','Marcus told him to log off lol'], ['BidKing','he never logs off'],
+    ['Silent_Man','cabin is the best install we have'], ['Watcher_12','years of footage on this one'], ['GhostUser','he looked right at cam 4'],
+    ['ZeroDay','no he didn\'t. he looked at the clock'], ['SYS','buyers watching: 731'], ['DarkPassenger','someone tell him to turn around again'],
+    ['Hunter23','the smoke detector angle is perfect'], ['NullPointer','he\'s reading his own name out loud'], ['Watcher_07','{me} you seeing this?']
   ],
   s12: [
     ['SYS','stream reconnected'], ['Watcher_01','He saw the ground team.'], ['NullPointer','Window reaction delayed.'],
     ['ZeroDay','Thought he\'d notice sooner lol .'], ['SYS','tabs reopened'], ['DarkPassenger','wifi off. still connected.'],
-    ['GhostUser','he doesn\'t understand the connection isn\'t his'], ['SYS','route persisted']
+    ['GhostUser','he doesn\'t understand the connection isn\'t his'], ['SYS','route persisted'], ['Lurker_88','he closed the laptop again'],
+    ['Hunter23','camera doesn\'t need the laptop'], ['Watcher_12','he\'s checking the window'], ['BidKing','ground team, stay still'],
+    ['SYS','viewers: rising'], ['Silent_Man','cigarette. tell them to put it out'], ['NullPointer','too late. he saw it'],
+    ['ZeroDay','he\'s holding his breath'], ['Watcher_07','unplug the router, Cole. go ahead.'], ['GhostUser','he did. lol'],
+    ['SYS','fallback route active'], ['DarkPassenger','motion light is on outside'], ['Watcher_01','the horror left the screen']
   ],
   s15: [
     ['SYS','ARCHIVE: COLE LEWIS · unlocked'], ['Watcher_01','there it is'], ['GhostUser','over a decade'],
     ['DarkPassenger','he stopped breathing'], ['ZeroDay','start at 001'], ['NullPointer','the woods one is my favorite'],
-    ['SYS','1 new file added'], ['GhostUser','check the viewers folder, {me}']
+    ['SYS','1 new file added'], ['Lurker_88','his mom is in 002'], ['Hunter23','groceries. every sunday.'],
+    ['Watcher_12','the storm one is 2016 right?'], ['BidKing','he slept through all of it'], ['Silent_Man','we didn\'t'],
+    ['Watcher_07','he\'s scrolling back further'], ['GhostUser','he remembers the elementary school'], ['ZeroDay','he doesn\'t remember the car outside'],
+    ['SYS','3,412 files indexed'], ['DarkPassenger','every summer at the cabin'], ['NullPointer','he thought this place was his'],
+    ['Watcher_01','someone knocked downstairs'], ['GhostUser','check the viewers folder, {me}']
   ]
 };
+const GENERIC = [
+  ['Lurker_88','lag on my end'], ['Watcher_07','who just joined'], ['SYS','buyer verified'], ['NullPointer','keep it quiet in here'],
+  ['Silent_Man','stream quality is better tonight'], ['ZeroDay','anyone else on the 3am shift'], ['SYS','connection stable · 3 relays'],
+  ['BidKing','wallet topped up'], ['GhostUser','new guest in chat'], ['Hunter23','say something, {me}'], ['DarkPassenger','guests don\'t talk much'],
+  ['Watcher_12','{me} has been here a while'], ['SYS','{me} is watching']
+];
 const REPLIES = [
   'noted, {me}', 'viewer {me} is participating', 'expected.', '{me} is typing again',
   'stay a little longer, {me}', 'what time is it there, {me}? {time}. same here.', 'nobody asked, {me}',
@@ -957,7 +985,11 @@ $$('.chat[data-chat]').forEach(c => {
   lines.slice(0,6).forEach(([w,t]) => addMsg(log, w, t));
   let i = 6;
   const ch = chats[key] = { log, running:false, timer:null };
-  const step = () => { const [w,t] = lines[i % lines.length]; i++; addMsg(log, w, t); ch.timer = setTimeout(step, rand(1800, 3600)); };
+  const step = () => {
+    const [w,t] = Math.random() < .25 ? pick(GENERIC) : lines[i++ % lines.length];
+    addMsg(log, w, t);
+    ch.timer = setTimeout(step, rand(1300, 3000));
+  };
   ch.start = () => { if(!ch.running){ ch.running = true; step(); } };
   ch.stop  = () => { ch.running = false; clearTimeout(ch.timer); };
   $('.chat-form', c).addEventListener('submit', e => {
@@ -1069,13 +1101,13 @@ const ARCHIVE = [
   ['2014', 'ARCHIVE_001 — COLE_PLAYING_IN_WOODS',      2,  'v-still v-tight'],
   ['2014', 'ARCHIVE_002 — MOTHER_UNLOADING_GROCERIES', 5,  'v-still v-tight2'],
   ['2016', 'ARCHIVE_003 — COLE_SLEEPING_DURING_STORM', 8,  'v-ir v-tight'],
-  ['2018', 'ARCHIVE_004 — BEDROOM_BEFORE_DESK',        11, 'v-still'],
+  ['2018', 'ARCHIVE_004 — BEDROOM_BEFORE_DESK',        11, 'v-still v-crop-tl'],
   ['2019', 'ARCHIVE_005 — COLE_OUTSIDE_ELEMENTARY',    14, 'v-still v-tight2'],
   ['2021', 'ARCHIVE_1187 — CABIN_ARRIVAL_SUMMER',      17, 'v-still v-tight'],
-  ['2023', 'ARCHIVE_2045 — GUEST_BEDROOM_NIGHT',       20, 'v-ir'],
+  ['2023', 'ARCHIVE_2045 — GUEST_BEDROOM_NIGHT',       20, 'v-ir v-crop-tl'],
   ['2025', 'ARCHIVE_2988 — KITCHEN_SMOKE_DETECTOR',    23, 'v-dim v-tight2'],
-  ['2026', 'ARCHIVE_3411 — DISCORD_CALL_MARCUS',       9,  ''],
-  ['2026', 'ARCHIVE_3412 — LIVE_' + new Date().toISOString().slice(0,10), 4, ''],
+  ['2026', 'ARCHIVE_3411 — DISCORD_CALL_MARCUS',       9,  'v-crop-tl'],
+  ['2026', 'ARCHIVE_3412 — LIVE_' + new Date().toISOString().slice(0,10), 4, 'v-crop-tl'],
 ];
 const YEAR_COUNTS = { '2014':214, '2016':388, '2018':402, '2019':451, '2021':566, '2023':612, '2025':703, '2026':76 };
 const folders = $('#folders'), files = $('#files');

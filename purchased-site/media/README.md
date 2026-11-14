@@ -2,16 +2,16 @@
 
 Web-compressed clips used by `index.html` (H.264, faststart, mono 64k audio).
 
-| File | Source upload | Where it appears |
-|---|---|---|
-| `victoria.mp4` | `exp 1.mp4` | Featured stream (Victoria Reeves) |
-| `victoria-2.mp4` | `Exp 2.mp4` | Victoria's listing card |
-| `subject3.mp4` | `Sequence 6.mp4` | "Casey M." listing card |
-| `subject3-2.mp4` | `Sequence 01 (2).mp4` | Spare, not used yet |
-| `cole.mp4` | `Sequence 01.mp4` (zip 1) | Cam 04 guest bedroom, new-listing card |
-| `cole-2.mp4` … `cole-4.mp4` | `Sequence 02–04.mp4` | Cams 01–03 (cropped/filtered) |
-| `cole-5.mp4` | `Sequence 05.mp4` | Subject telemetry player |
-| `cole-2.mp4` … `cole-6.mp4`, `cole.mp4` | `Sequence 02–06.mp4` | Archive thumbnails |
+| File | Source upload | Who | Where it appears |
+|---|---|---|---|
+| `victoria.mp4` | `exp 1.mp4` | Victoria | Featured stream |
+| `victoria-2.mp4` | `Exp 2.mp4` | Victoria | Her listing card |
+| `cole.mp4` | `Sequence 6.mp4` | Cole | Cam 04 guest bedroom, new-listing card, archive |
+| `cole-2.mp4` | `Sequence 01 (2).mp4` | Cole | Telemetry player, cams 01–03 placeholders, archive |
+| `dre.mp4` | Bryce zip · `Sequence 01.mp4` | Dre | "Dre" listing card |
+| `dre-2.mp4` … `dre-6.mp4` | Bryce zips · `Sequence 02–06.mp4` | Dre | Spare, not used yet |
+
+Cams 01–03 (outside the cabin, kitchen, bathroom) still use cropped Cole bedroom footage until real clips of those places exist.
 
 The original full-size uploads are still in the git history (commits "Add files via upload").
 

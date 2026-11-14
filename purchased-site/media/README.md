@@ -6,10 +6,10 @@ Web-compressed clips used by `index.html` (H.264, faststart, mono 64k audio).
 |---|---|---|---|
 | `victoria.mp4` | `exp 1.mp4` | Victoria | Featured stream |
 | `victoria-2.mp4` | `Exp 2.mp4` | Victoria | Her listing card |
-| `cole.mp4` | `Sequence 6.mp4` | Cole | Cam 04 guest bedroom, new-listing card, archive |
-| `cole-2.mp4` | `Sequence 01 (2).mp4` | Cole | Telemetry player, archive |
+| `cole.mp4` | `Sequence 6.mp4` | Cole | Cam 02 · bedroom, archive |
+| `cole-2.mp4` | `Sequence 01 (2).mp4` | Cole | Archive |
 | `cole-outside.mp4` | Drive · `Outside.mp4` (REC logo added) | Cole | Cam 01 · outside the cabin, archive |
-| `cole-room.mp4` | Drive · `Bedroom.mp4` (REC logo added) | Cole | Cam 02 · bedroom, archive |
+| `cole-room.mp4` | Drive · `Bedroom.mp4` (REC logo added) | Cole | Cam 04 · guest bedroom, new-listing card, telemetry player, archive |
 | `cole-living.mp4` | Drive · `Live_room.mp4` (REC logo added) | Cole | Cam 03 · living room, archive |
 | `dre.mp4` | Bryce zip · `Sequence 01.mp4` | Dre | "Dre" listing card |
 | `dre-2.mp4` … `dre-6.mp4` | Bryce zips · `Sequence 02–06.mp4` | Dre | Spare, not used yet |

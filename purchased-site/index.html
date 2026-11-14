@@ -552,7 +552,7 @@ button.pill:hover{ color:var(--text); }
             </div>
           </button>
           <button class="card new" id="newCard" data-status="live" data-go="cole">
-            <div class="feed v-ir" data-src="cole"><div class="nosig">connecting</div><span class="chip live badge">New</span><span class="watch viewers"><span class="vc" data-n="731">731</span> watching</span></div>
+            <div class="feed v-ir" data-src="cole-room"><div class="nosig">connecting</div><span class="chip live badge">New</span><span class="watch viewers"><span class="vc" data-n="731">731</span> watching</span></div>
             <div class="card-body">
               <div class="card-row"><span class="name">Cole L. · 19</span><span class="lot">LOT A-0430</span></div>
               <div class="loc">Guest bedroom · cam 4 of 4</div>
@@ -614,9 +614,9 @@ button.pill:hover{ color:var(--text); }
         <div class="panel">
           <div class="camgrid" id="camgrid">
             <div class="feed" data-src="cole-exterior"><div class="nosig">no motion</div><div class="osd"><span class="tl">CAM 01 · Outside the cabin</span><span class="bl osd-time">--</span></div></div>
-            <div class="feed" data-src="cole-room"><div class="nosig">no motion</div><div class="osd"><span class="tl">CAM 02 · Bedroom</span><span class="bl osd-time">--</span></div></div>
+            <div class="feed v-crop-tl" data-src="cole"><div class="nosig">no motion</div><div class="osd"><span class="tl">CAM 02 · Bedroom</span><span class="bl osd-time">--</span></div></div>
             <div class="feed" data-src="cole-living"><div class="nosig">no motion</div><div class="osd"><span class="tl">CAM 03 · Living room</span><span class="bl osd-time">--</span></div></div>
-            <div class="feed hot v-crop-tl" data-src="cole" id="bedCam"><div class="nosig">awaiting signal</div><div class="figure"></div><div class="osd"><span class="tl">CAM 04 · Guest bedroom ● motion</span><span class="tr">tap to expand</span><span class="bl osd-time">--</span></div></div>
+            <div class="feed hot" data-src="cole-room" id="bedCam"><div class="nosig">awaiting signal</div><div class="figure"></div><div class="osd"><span class="tl">CAM 04 · Guest bedroom ● motion</span><span class="bl osd-time">--</span><span class="br">tap to expand</span></div></div>
           </div>
         </div>
         <div class="panel chat" data-chat="s09">
@@ -641,9 +641,9 @@ button.pill:hover{ color:var(--text); }
             <span class="title"><span class="chip live">Live</span> Cole Lewis · Cam 04</span>
             <span class="viewers"><span class="vc vc-climb" data-n="12">12</span> watching</span>
           </div>
-          <div class="feed v-crop-tl" data-src="cole-live" id="coleFeed">
+          <div class="feed" data-src="cole-live" id="coleFeed">
             <div class="nosig">reconnecting</div>
-            <div class="osd"><span class="tl">CAM 04 · Guest bedroom · route: fallback</span><span class="tr"><span class="dot pulse"></span></span><span class="bl osd-time">--</span></div>
+            <div class="osd"><span class="tl">CAM 04 · Guest bedroom · route: fallback</span><span class="bl osd-time">--</span></div>
             <div class="closed-msg" id="closedMsg"><span>TAB CLOSED</span><b id="closedSub">reopening…</b></div>
           </div>
           <div class="player-bar">
@@ -750,11 +750,11 @@ const MEDIA = {
   victoria:        'media/victoria.mp4',     // featured stream (looks toward the doorway)
   'victoria-card': 'media/victoria-2.mp4',   // listing card
   dre:             'media/dre.mp4',          // "Dre" listing card (Bryce's footage)
-  cole:            'media/cole.mp4',         // cam 04 · guest bedroom + new-listing card
+  cole:            'media/cole.mp4',         // cam 02 · bedroom
   'cole-exterior': 'media/cole-outside.mp4', // cam 01 · outside the cabin
-  'cole-room':     'media/cole-room.mp4',    // cam 02 · bedroom
+  'cole-room':     'media/cole-room.mp4',    // cam 04 · guest bedroom, new-listing card
   'cole-living':   'media/cole-living.mp4',  // cam 03 · living room
-  'cole-live':     'media/cole-2.mp4',       // subject telemetry player
+  'cole-live':     'media/cole-room.mp4',    // subject telemetry player (cam 04)
 };
 const ARCHIVE_CLIPS = ['media/cole-outside.mp4','media/cole-room.mp4','media/cole-living.mp4','media/cole.mp4','media/cole-2.mp4'];
 

@@ -10,10 +10,10 @@ Web-compressed clips used by `index.html` (H.264, faststart, mono 64k audio).
 | `cole-2.mp4` | `Sequence 01 (2).mp4` | Cole | Telemetry player, archive |
 | `cole-outside.mp4` | Drive · `Outside.mp4` (REC logo added) | Cole | Cam 01 · outside the cabin, archive |
 | `cole-room.mp4` | Drive · `Bedroom.mp4` (REC logo added) | Cole | Cam 02 · bedroom, archive |
+| `cole-living.mp4` | Drive · `Live_room.mp4` (REC logo added) | Cole | Cam 03 · living room, archive |
 | `dre.mp4` | Bryce zip · `Sequence 01.mp4` | Dre | "Dre" listing card |
 | `dre-2.mp4` … `dre-6.mp4` | Bryce zips · `Sequence 02–06.mp4` | Dre | Spare, not used yet |
 
-Cam 03 (living room) shows a "connecting" screen until `Live_room.mp4` is added as `cole-living.mp4` and `'cole-living'` in the `MEDIA` object points at it.
 
 The original full-size uploads are still in the git history (commits "Add files via upload").
 

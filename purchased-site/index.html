@@ -615,7 +615,7 @@ button.pill:hover{ color:var(--text); }
           <div class="camgrid" id="camgrid">
             <div class="feed" data-src="cole-exterior"><div class="nosig">no motion</div><div class="osd"><span class="tl">CAM 01 · Outside the cabin</span><span class="bl osd-time">--</span></div></div>
             <div class="feed" data-src="cole-room"><div class="nosig">no motion</div><div class="osd"><span class="tl">CAM 02 · Bedroom</span><span class="bl osd-time">--</span></div></div>
-            <div class="feed" data-src="cole-living"><div class="nosig">connecting</div><div class="osd"><span class="tl">CAM 03 · Living room</span><span class="tr"><span class="dot pulse"></span></span><span class="bl osd-time">--</span></div></div>
+            <div class="feed" data-src="cole-living"><div class="nosig">no motion</div><div class="osd"><span class="tl">CAM 03 · Living room</span><span class="bl osd-time">--</span></div></div>
             <div class="feed hot v-crop-tl" data-src="cole" id="bedCam"><div class="nosig">awaiting signal</div><div class="figure"></div><div class="osd"><span class="tl">CAM 04 · Guest bedroom ● motion</span><span class="tr">tap to expand</span><span class="bl osd-time">--</span></div></div>
           </div>
         </div>
@@ -753,10 +753,10 @@ const MEDIA = {
   cole:            'media/cole.mp4',         // cam 04 · guest bedroom + new-listing card
   'cole-exterior': 'media/cole-outside.mp4', // cam 01 · outside the cabin
   'cole-room':     'media/cole-room.mp4',    // cam 02 · bedroom
-  'cole-living':   null,                     // cam 03 · living room (Live_room.mp4 not added yet)
+  'cole-living':   'media/cole-living.mp4',  // cam 03 · living room
   'cole-live':     'media/cole-2.mp4',       // subject telemetry player
 };
-const ARCHIVE_CLIPS = ['media/cole-outside.mp4','media/cole-room.mp4','media/cole.mp4','media/cole-2.mp4'];
+const ARCHIVE_CLIPS = ['media/cole-outside.mp4','media/cole-room.mp4','media/cole-living.mp4','media/cole.mp4','media/cole-2.mp4'];
 
 const $  = (s, r=document) => r.querySelector(s);
 const $$ = (s, r=document) => [...r.querySelectorAll(s)];

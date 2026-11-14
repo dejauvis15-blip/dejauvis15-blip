@@ -493,8 +493,8 @@ button.pill:hover{ color:var(--text); }
   <div class="run">
     <span><b>VERIFIED BUYERS ONLY</b></span>
     <span>LOT A-0417 · bid ₿ 1.284 · <span class="hot">reserved</span></span>
-    <span>LOT A-0421 · Dre · 274 watching</span>
-    <span>LOT A-0426 · install scheduled</span>
+    <span>LOT A-0421 · Dre M. · 274 watching</span>
+    <span>LOT A-0426 · Tyler J. · 3 cams live</span>
     <span>LOT A-0398 · <b>collected</b></span>
     <span>LOT A-0430 · <span class="hot">pending review</span></span>
     <span>listings refresh every 60s</span>
@@ -528,17 +528,17 @@ button.pill:hover{ color:var(--text); }
           <button class="card" data-status="live">
             <div class="feed" data-src="dre"><div class="nosig">connecting</div><span class="chip live badge">Live</span><span class="watch viewers"><span class="vc" data-n="274">274</span> watching</span></div>
             <div class="card-body">
-              <div class="card-row"><span class="name">Dre</span><span class="lot">LOT A-0421</span></div>
+              <div class="card-row"><span class="name">Dre M. · 22</span><span class="lot">LOT A-0421</span></div>
               <div class="loc">Gaming room · cam 1 of 2</div>
               <div class="stats"><div><b>Current bid</b><span class="bid">₿ 0.910</span></div><div><b>Ends in</b><span class="timer" data-s="4385">01:13:05</span></div></div>
             </div>
           </button>
-          <button class="card" data-status="soon">
-            <div class="feed"><div class="nosig">stream starts soon</div><span class="chip badge">Upcoming</span></div>
+          <button class="card" data-status="live">
+            <div class="feed v-tight2" data-src="larry"><div class="nosig">connecting</div><span class="chip live badge">Live</span><span class="watch viewers"><span class="vc" data-n="198">198</span> watching</span></div>
             <div class="card-body">
-              <div class="card-row"><span class="name">Emma L. · 21</span><span class="lot">LOT A-0426</span></div>
-              <div class="loc">Install scheduled · 4 cams</div>
-              <div class="stats"><div><b>Starting</b><span class="bid">₿ 0.400</span></div><div><b>Goes live</b><span class="timer" data-s="2262">00:37:42</span></div></div>
+              <div class="card-row"><span class="name">Tyler J. · 21</span><span class="lot">LOT A-0426</span></div>
+              <div class="loc">Bedroom · cam 1 of 3</div>
+              <div class="stats"><div><b>Current bid</b><span class="bid">₿ 0.640</span></div><div><b>Ends in</b><span class="timer" data-s="2262">00:37:42</span></div></div>
             </div>
           </button>
           <button class="card sold" data-status="sold">
@@ -747,15 +747,15 @@ button.pill:hover{ color:var(--text); }
 const MEDIA = {
   victoria:        'media/victoria.mp4',     // featured stream (looks toward the doorway)
   'victoria-card': 'media/victoria-2.mp4',   // listing card
-  dre:             'media/dre.mp4',          // "Dre" listing card (Bryce's footage)
-  cole:            'media/cole.mp4',         // archive
+  dre:             'media/dre.mp4',          // "Dre M." listing card (Bryce's footage)
+  larry:           'media/larry.mp4',        // "Tyler J." listing card (Larry's bedroom footage)
   'cole-exterior': 'media/cole-outside.mp4', // cam 01 · outside the cabin
   'cole-room':     'media/cole-room.mp4',    // cam 04 · guest bedroom, new-listing card
   'cole-kitchen':  'media/cole-kitchen.mp4', // cam 02 · kitchen
   'cole-living':   'media/cole-living.mp4',  // cam 03 · living room
   'cole-live':     'media/cole-room.mp4',    // subject telemetry player (cam 04)
 };
-const ARCHIVE_CLIPS = ['media/cole-outside.mp4','media/cole-room.mp4','media/cole-living.mp4','media/cole-kitchen.mp4','media/cole.mp4','media/cole-2.mp4'];
+const ARCHIVE_CLIPS = ['media/cole-outside.mp4','media/cole-room.mp4','media/cole-living.mp4','media/cole-kitchen.mp4'];
 
 const $  = (s, r=document) => r.querySelector(s);
 const $$ = (s, r=document) => [...r.querySelectorAll(s)];
@@ -905,11 +905,11 @@ const colorFor = u => userColor[u] || (userColor[u] = COLORS[Object.keys(userCol
 const SCRIPTS = {
   s07: [
     ['SYS','verified buyers only'], ['BidKing','A-0417 reserved'], ['ZeroDay','pickup window?'],
-    ['Silent_Man','A-0421 install looks clean'], ['NullPointer','new listing pending review'], ['BidKing','hold on A-0426'],
+    ['Silent_Man','A-0421 install looks clean'], ['NullPointer','new listing pending review'], ['BidKing','hold on Tyler, A-0426'],
     ['SYS','new bid on LOT A-0417'], ['NullPointer','{me} hasn\'t bid'], ['Silent_Man','guest pass. just looking, {me}?'],
-    ['Hunter23','Dre stream is clean tonight'], ['Watcher_07','Dre hasn\'t moved from that chair in 3 hours'], ['BidKing','A-0421 under reserve still'],
+    ['Hunter23','Dre M. stream is clean tonight'], ['Watcher_07','Dre hasn\'t moved from that chair in 3 hours'], ['BidKing','A-0421 under reserve still'],
     ['ZeroDay','how many cams on Dre?'], ['NullPointer','two. desk and doorway'], ['SYS','LOT A-0421 · bid ₿ 0.910'],
-    ['Lurker_88','is A-0398 really collected?'], ['Silent_Man','yesterday. smooth.'], ['GhostUser','A-0426 install crew is on site'],
+    ['Lurker_88','is A-0398 really collected?'], ['Silent_Man','yesterday. smooth.'], ['GhostUser','Tyler is on the phone again'],
     ['DarkPassenger','who\'s the new one pending?'], ['NullPointer','can\'t say until it\'s live'], ['ZeroDay','timer on A-0417 is moving fast'],
     ['SYS','14 buyers joined'], ['Watcher_07','refresh rate is slow tonight'], ['BidKing','{me} you watching or buying?']
   ],
